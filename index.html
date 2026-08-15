@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b1020">
+<title>Gênesis</title>
+<style>
+  :root{
+    --bg1:#0b1020; --bg2:#141a33; --panel:rgba(255,255,255,.06); --panel-b:rgba(255,255,255,.12);
+    --txt:#eaf0ff; --muted:#9aa6cc; --gold:#f6c453;
+    --fogo:#ff6a3d; --agua:#3d9bff; --terra:#8b6b45; --ar:#b9c6e6;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    color:var(--txt); background:radial-gradient(1200px 800px at 50% -10%,#1c2547,#0b1020 60%);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:18px 14px 30px; user-select:none; overflow-x:hidden;
+  }
+  .wrap{width:100%; max-width:520px}
+
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
+  .title{font-size:26px; font-weight:800; letter-spacing:.04em}
+  .title small{display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.22em; text-transform:uppercase}
+  .medals-btn{
+    background:var(--panel); border:1px solid var(--panel-b); color:var(--txt);
+    padding:9px 14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:14px;
+  }
+  .medals-btn b{color:var(--gold)}
+
+  .scene{
+    background:linear-gradient(180deg,var(--bg2),rgba(20,26,51,.4));
+    border:1px solid var(--panel-b); border-radius:20px; padding:16px; text-align:center;
+    position:relative; overflow:hidden;
+  }
+  .scene .lvl{font-size:12px; color:var(--muted); letter-spacing:.15em; text-transform:uppercase}
+  .world{
+    width:150px; height:150px; margin:12px auto 8px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:74px;
+    background:radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 10px 40px rgba(0,0,0,.5), inset 0 0 40px rgba(0,0,0,.5);
+    transition:background .5s ease, box-shadow .5s ease; position:relative;
+  }
+  @keyframes worldPop{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+  .world.bump{animation:worldPop .4s ease}
+  .story{min-height:44px; font-size:15px; line-height:1.4; color:#dfe6ff; margin:6px 4px 4px}
+
+  .stats{display:flex; gap:6px; justify-content:center; margin-top:10px; flex-wrap:wrap}
+  .stat{display:flex; align-items:center; gap:4px; font-size:12px; color:var(--muted); background:var(--panel); padding:4px 9px; border-radius:20px}
+  .stat b{color:var(--txt); font-variant-numeric:tabular-nums}
+
+  .slots{display:flex; gap:10px; justify-content:center; margin:16px 0}
+  .slot{
+    width:56px; height:72px; border-radius:12px; border:2px dashed var(--panel-b);
+    display:flex; align-items:center; justify-content:center; font-size:30px; color:var(--muted);
+    background:var(--panel);
+  }
+  .slot.filled{border-style:solid; border-color:transparent; color:#fff}
+
+  .hand{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:6px}
+  .card{
+    position:relative; border:1px solid var(--panel-b); border-radius:16px; padding:14px 6px 10px;
+    background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+    cursor:pointer; text-align:center; transition:transform .1s ease, box-shadow .2s ease, border-color .2s;
+  }
+  .card:hover{transform:translateY(-3px)}
+  .card:active{transform:translateY(0)}
+  .card .emoji{font-size:34px; line-height:1}
+  .card .name{font-size:12px; font-weight:700; margin-top:6px; letter-spacing:.03em}
+  .card[data-el="fogo"]{box-shadow:inset 0 -22px 30px -24px var(--fogo)} .card[data-el="fogo"]:hover{border-color:var(--fogo)}
+  .card[data-el="agua"]{box-shadow:inset 0 -22px 30px -24px var(--agua)} .card[data-el="agua"]:hover{border-color:var(--agua)}
+  .card[data-el="terra"]{box-shadow:inset 0 -22px 30px -24px var(--terra)} .card[data-el="terra"]:hover{border-color:var(--terra)}
+  .card[data-el="ar"]{box-shadow:inset 0 -22px 30px -24px var(--ar)} .card[data-el="ar"]:hover{border-color:var(--ar)}
+  .card.disabled{opacity:.4; pointer-events:none}
+
+  .actions{display:flex; gap:10px; margin-top:14px}
+  .btn{
+    flex:1; padding:13px; border-radius:14px; border:none; cursor:pointer; font-weight:800; font-size:15px;
+    background:var(--gold); color:#231a02;
+  }
+  .btn.ghost{background:var(--panel); color:var(--txt); border:1px solid var(--panel-b)}
+  .btn:active{transform:translateY(1px)}
+  .hidden{display:none !important}
+
+  /* ending overlay */
+  .overlay{position:fixed; inset:0; background:rgba(6,9,20,.82); backdrop-filter:blur(6px);
+    display:none; align-items:center; justify-content:center; padding:20px; z-index:50}
+  .overlay.show{display:flex; animation:fade .3s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{width:100%; max-width:400px; background:linear-gradient(180deg,#1a2244,#10152b);
+    border:1px solid var(--panel-b); border-radius:22px; padding:24px; text-align:center}
+  .modal .badge{font-size:76px; line-height:1; margin:4px 0 6px; filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}
+  @keyframes badgeIn{0%{transform:scale(0) rotate(-25deg)}70%{transform:scale(1.15) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
+  .modal .badge.anim{animation:badgeIn .5s cubic-bezier(.2,1.3,.4,1)}
+  .modal h2{font-size:24px; margin-bottom:4px}
+  .modal .kind{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px}
+  .modal p{font-size:15px; line-height:1.5; color:#dbe3ff; margin-bottom:8px}
+  .modal .newtag{display:inline-block; background:var(--gold); color:#231a02; font-weight:800;
+    font-size:12px; padding:4px 10px; border-radius:20px; margin:6px 0 12px; letter-spacing:.05em}
+  .modal .seq{font-size:22px; letter-spacing:.15em; margin:6px 0 16px}
+
+  /* gallery */
+  .gallery-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:6px 0 16px; text-align:left}
+  .gcell{background:var(--panel); border:1px solid var(--panel-b); border-radius:14px; padding:12px; display:flex; gap:10px; align-items:flex-start}
+  .gcell .ge{font-size:32px; line-height:1}
+  .gcell.locked .ge{filter:grayscale(1) opacity(.5)}
+  .gcell .gt{font-size:14px; font-weight:800}
+  .gcell.locked .gt{color:var(--muted)}
+  .gcell .gh{font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.35}
+  .gcell .gseq{font-size:13px; letter-spacing:.12em; margin-top:5px}
+  .progress{font-size:13px; color:var(--muted); margin-bottom:10px}
+  .progress b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="title">Gênesis<small>crie um mundo</small></div>
+    <button class="medals-btn" id="openGallery">🏅 Emblemas <b id="medalCount">0</b>/8</button>
+  </div>
+
+  <div class="scene">
+    <div class="lvl" id="lvlName">Nível 1 — O Mundo Vazio</div>
+    <div class="world" id="world">🌑</div>
+    <div class="story" id="story">Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.</div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="slots" id="slots">
+    <div class="slot">1</div><div class="slot">2</div><div class="slot">3</div>
+  </div>
+
+  <div class="hand" id="hand">
+    <div class="card" data-el="fogo"><div class="emoji">🔥</div><div class="name">FOGO</div></div>
+    <div class="card" data-el="agua"><div class="emoji">💧</div><div class="name">ÁGUA</div></div>
+    <div class="card" data-el="terra"><div class="emoji">🌍</div><div class="name">TERRA</div></div>
+    <div class="card" data-el="ar"><div class="emoji">💨</div><div class="name">AR</div></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn ghost" id="resetBtn">↺ Recomeçar</button>
+  </div>
+</div>
+
+<!-- Ending modal -->
+<div class="overlay" id="endOverlay">
+  <div class="modal">
+    <div class="badge anim" id="endBadge">🌳</div>
+    <div class="kind" id="endKind">Final desbloqueado</div>
+    <h2 id="endTitle">Mundo Vivo</h2>
+    <div class="newtag hidden" id="newTag">✦ NOVO EMBLEMA ✦</div>
+    <p id="endText">...</p>
+    <div class="seq" id="endSeq">🔥 💧 🌍</div>
+    <div class="actions">
+      <button class="btn" id="playAgain">Criar outro mundo</button>
+      <button class="btn ghost" id="toGallery">🏅 Emblemas</button>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery modal -->
+<div class="overlay" id="galleryOverlay">
+  <div class="modal">
+    <div class="kind">Coleção de destinos</div>
+    <h2 style="margin-bottom:8px">Emblemas</h2>
+    <div class="progress"><b id="galleryCount">0</b> de 8 destinos descobertos</div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="actions">
+      <button class="btn" id="closeGallery">Voltar a criar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- ELEMENTS ----------
+  const EL = {
+    fogo:  {emoji:"🔥", name:"Fogo"},
+    agua:  {emoji:"💧", name:"Água"},
+    terra: {emoji:"🌍", name:"Terra"},
+    ar:    {emoji:"💨", name:"Ar"},
+  };
+
+  // ---------- GAME LOGIC (order matters!) ----------
+  function newState(){ return {heat:0, water:0, land:0, life:0, chaos:0}; }
+
+  // Apply one element to the world. Effects depend on the CURRENT state -> order matters.
+  function applyCard(prev, el){
+    const s = {...prev};
+    if(el==="fogo"){
+      s.heat += 2;
+      if(prev.water>0){ s.water -= 2; s.chaos += 2; }   // ferve a água (explosão de vapor)
+      if(prev.life>0){ s.life -= 1; s.chaos += 1; }      // queima a vida
+    } else if(el==="agua"){
+      s.water += 2;
+      s.heat -= 1;                                        // sempre esfria
+      if(prev.heat>=2){ s.chaos += 2; }                  // choque violento de vapor
+      if(prev.land>0 && s.life<3){ s.life += 1; }        // terra + água = vida
+    } else if(el==="terra"){
+      s.land += 2;
+      if(s.chaos>0) s.chaos -= 1;                         // estabiliza
+      if(prev.water>=2 && s.life<3){ s.life += 1; }      // solo fértil
+    } else if(el==="ar"){
+      s.chaos += 1;
+      if(prev.heat>=2){ s.heat += 1; s.chaos += 1; }     // atiça as chamas (incêndio caótico)
+      if(prev.water>=3){ s.water += 1; }                 // tempestade
+      if(prev.life>0 && s.life<3){ s.life += 1; }        // espalha a vida
+    }
+    return s;
+  }
+
+  function simulate(seq){
+    let s = newState();
+    for(const el of seq) s = applyCard(s, el);
+    return s;
+  }
+
+  // Map final world state -> one of 8 fates (priority order)
+  function classify(s){
+    if(s.chaos>=4) return "cataclismo";
+    if(s.life>=2) return "eden";
+    if(s.heat<=-2) return "gelo";
+    if(s.heat>=3 && s.water<=0) return "inferno";
+    if(s.land>=2 && s.heat>=1 && s.water<=0 && s.life<=0) return "deserto";
+    if(s.land>=3 && s.water<=0 && s.life<=0) return "pedra";
+    if(s.water>=3 && s.heat<=1) return "diluvio";
+    if(s.water>=2 && s.heat<=1 && s.life<=0 && s.land<=1) return "diluvio";
+    return "vazio";
+  }
+
+  // ---------- FATES ----------
+  const FATES = {
+    eden:      {emoji:"🌳", badge:"🌳", title:"Mundo Vivo", kind:"win",  hint:"Prepare a terra, depois traga a água — e deixe a vida se espalhar.",
+                text:"Terra, água e ar em harmonia. Florestas cobrem o mundo e a vida floresce. Você criou um Éden."},
+    inferno:   {emoji:"🌋", badge:"🔥", title:"Mundo em Chamas", kind:"win", hint:"Apenas fogo, e nada que o apague.",
+                text:"Rios de lava, céus de fumaça. Sem água que as contenha, as chamas reinam para sempre."},
+    diluvio:   {emoji:"🌊", badge:"💧", title:"O Grande Dilúvio", kind:"win", hint:"Uma faísca de calor primeiro — depois águas e mais águas para afogar o mundo.",
+                text:"As águas subiram sem parar até engolir tudo. Um oceano infinito, silencioso e profundo."},
+    gelo:      {emoji:"❄️", badge:"❄️", title:"Mundo Congelado", kind:"win", hint:"Só água, água e mais água — sem nenhum calor, até tudo virar gelo.",
+                text:"O calor se esvaiu e as águas viraram gelo eterno. Um mundo branco, imóvel e cristalino."},
+    deserto:   {emoji:"🏜️", badge:"🏜️", title:"Deserto Sem Fim", kind:"win", hint:"Terra e fogo, mas negue-lhe toda a água.",
+                text:"Terra firme cozida pelo sol. Sem uma gota d'água, só dunas se estendem até o horizonte."},
+    pedra:     {emoji:"🗿", badge:"🗿", title:"Mundo de Pedra", kind:"win", hint:"Só rocha sobre rocha — sem água, sem vida.",
+                text:"Montanhas nuas e planícies de rocha. Sólido, eterno... e completamente sem vida."},
+    cataclismo:{emoji:"💥", badge:"☄️", title:"O Cataclismo", kind:"lose", hint:"Force elementos demais a colidir de uma vez.",
+                text:"Fogo contra água, ordem contra caos. A tensão foi grande demais — o mundo se despedaçou."},
+    vazio:     {emoji:"🕳️", badge:"⚫", title:"O Vazio Permanece", kind:"lose", hint:"Misture opostos até um anular o outro — e nada chega a tomar forma.",
+                text:"Os elementos se anularam entre si. Onde poderia surgir um mundo, restou apenas o vazio silencioso."},
+  };
+  const FATE_ORDER = ["eden","inferno","diluvio","gelo","deserto","pedra","cataclismo","vazio"];
+
+  // ---------- WORLD VISUAL ----------
+  function worldEmoji(s, done){
+    if(s.chaos>=4) return "💥";
+    if(!done && s.heat===0 && s.water===0 && s.land===0 && s.life===0) return "🌑";
+    if(s.life>=2) return "🌳";
+    if(s.heat<=-2) return "❄️";
+    if(s.heat>=4 && s.water<=0) return "🌋";
+    if(s.water>=4 && s.heat<=1) return "🌊";
+    if(s.life===1) return "🌱";
+    if(s.land>=2 && s.heat>=2 && s.water<=0) return "🏜️";
+    if(s.land>=2) return "🏔️";
+    if(s.water>=2) return "💧";
+    if(s.heat>=2) return "🔥";
+    return "🌑";
+  }
+  function worldBg(s){
+    if(s.chaos>=4) return "radial-gradient(circle at 40% 30%,#ff5a3c,#3a0a06 70%)";
+    if(s.life>=2) return "radial-gradient(circle at 35% 30%,#54c07a,#0c2a17 70%)";
+    if(s.heat<=-2) return "radial-gradient(circle at 35% 30%,#bfe4ff,#12314a 70%)";
+    if(s.heat>=4 && s.water<=0) return "radial-gradient(circle at 40% 30%,#ff8a3c,#3a1002 70%)";
+    if(s.water>=4) return "radial-gradient(circle at 35% 30%,#3d9bff,#07284d 70%)";
+    if(s.land>=2 && s.heat>=2) return "radial-gradient(circle at 35% 35%,#e0b874,#3a2a12 70%)";
+    if(s.land>=2) return "radial-gradient(circle at 35% 30%,#9c8256,#241a0d 70%)";
+    if(s.water>=2) return "radial-gradient(circle at 35% 30%,#4a86c9,#0c2036 70%)";
+    if(s.heat>=2) return "radial-gradient(circle at 40% 30%,#ff7a4d,#2a0d05 70%)";
+    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
+  }
+
+  // ---------- NARRATIVE ----------
+  function reaction(prev, el){
+    if(el==="fogo"){
+      if(prev.water>0) return "🔥 O fogo encontra as águas — vapor escaldante ruge pelo ar.";
+      if(prev.life>0) return "🔥 As chamas devoram a vida que mal havia nascido.";
+      return "🔥 Uma faísca acende o nada. Calor se derrama pelo vazio.";
+    }
+    if(el==="agua"){
+      if(prev.heat>=2) return "💧 A água toca o fogo — sibila e se ergue em névoa.";
+      if(prev.land>0) return "💧 A água banha a terra — algo verde estremece e desperta.";
+      return "💧 Águas se acumulam, frias, sobre o mundo silencioso.";
+    }
+    if(el==="terra"){
+      if(prev.water>=2) return "🌍 Solo fértil emerge das águas — o berço da vida.";
+      return "🌍 Continentes se erguem, sólidos, firmes, eternos.";
+    }
+    if(el==="ar"){
+      if(prev.heat>=2) return "💨 O vento atiça as brasas num incêndio faminto.";
+      if(prev.life>0) return "💨 A brisa carrega sementes por toda a extensão do mundo.";
+      if(prev.water>=3) return "💨 Ventos furiosos levantam tempestades sobre as águas.";
+      return "💨 Ventos varrem o mundo vazio, inquietos e sem rumo.";
+    }
+    return "";
+  }
+
+  // ---------- STATE / DOM ----------
+  const $ = id=>document.getElementById(id);
+  const worldEl=$("world"), storyEl=$("story"), statsEl=$("stats"), slotsEl=$("slots"), handEl=$("hand");
+  let seq=[], state=newState(), busy=false;
+
+  let unlocked = {};
+  try{ unlocked = JSON.parse(localStorage.getItem("genesis_unlocked")||"{}"); }catch(e){ unlocked={}; }
+
+  function save(){ localStorage.setItem("genesis_unlocked", JSON.stringify(unlocked)); }
+  function medalCount(){ return Object.keys(unlocked).length; }
+
+  function renderStats(s){
+    const items=[["🌡️",s.heat],["💧",s.water],["⛰️",s.land],["🌿",s.life],["⚡",s.chaos]];
+    statsEl.innerHTML = items.map(([ic,v])=>`<span class="stat">${ic} <b>${v}</b></span>`).join("");
+  }
+  function renderSlots(){
+    const cells=[0,1,2].map(i=>{
+      if(seq[i]) return `<div class="slot filled">${EL[seq[i]].emoji}</div>`;
+      return `<div class="slot">${i+1}</div>`;
+    });
+    slotsEl.innerHTML = cells.join("");
+  }
+  function updateMedalUI(){
+    $("medalCount").textContent = medalCount();
+  }
+
+  function bumpWorld(){ worldEl.classList.remove("bump"); void worldEl.offsetWidth; worldEl.classList.add("bump"); }
+
+  function reset(){
+    seq=[]; state=newState(); busy=false;
+    worldEl.textContent="🌑"; worldEl.style.background=worldBg(state);
+    storyEl.textContent="Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.";
+    renderStats(state); renderSlots();
+    [...handEl.children].forEach(c=>c.classList.remove("disabled"));
+  }
+
+  function playCard(el){
+    if(busy || seq.length>=3) return;
+    const prev=state;
+    state=applyCard(prev, el);
+    seq.push(el);
+    storyEl.textContent=reaction(prev, el);
+    worldEl.textContent=worldEmoji(state, false);
+    worldEl.style.background=worldBg(state);
+    bumpWorld();
+    renderStats(state); renderSlots();
+
+    if(seq.length>=3){
+      busy=true;
+      [...handEl.children].forEach(c=>c.classList.add("disabled"));
+      setTimeout(finish, 750);
+    }
+  }
+
+  function finish(){
+    const fateId=classify(state);
+    const fate=FATES[fateId];
+    worldEl.textContent=worldEmoji(state, true);
+    worldEl.style.background=worldBg(state);
+    bumpWorld();
+
+    const isNew = !unlocked[fateId];
+    if(isNew){ unlocked[fateId]={seq:[...seq]}; save(); }
+    updateMedalUI();
+
+    // fill modal
+    const b=$("endBadge"); b.textContent=fate.badge; b.classList.remove("anim"); void b.offsetWidth; b.classList.add("anim");
+    $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : "Final desbloqueado";
+    $("endTitle").textContent = fate.emoji+" "+fate.title;
+    $("endText").textContent = fate.text;
+    $("endSeq").textContent = seq.map(e=>EL[e].emoji).join(" ");
+    $("newTag").classList.toggle("hidden", !isNew);
+    $("endOverlay").classList.add("show");
+  }
+
+  // ---------- GALLERY ----------
+  function openGallery(){
+    $("galleryCount").textContent = medalCount();
+    const grid=$("galleryGrid");
+    grid.innerHTML = FATE_ORDER.map(id=>{
+      const f=FATES[id], got=unlocked[id];
+      if(got){
+        const s=got.seq.map(e=>EL[e].emoji).join(" ");
+        return `<div class="gcell">
+            <div class="ge">${f.badge}</div>
+            <div><div class="gt">${f.title}</div>
+            <div class="gseq">${s}</div></div></div>`;
+      }
+      return `<div class="gcell locked">
+          <div class="ge">🔒</div>
+          <div><div class="gt">? ? ?</div>
+          <div class="gh">${f.hint}</div></div></div>`;
+    }).join("");
+    $("galleryOverlay").classList.add("show");
+  }
+
+  // ---------- EVENTS ----------
+  handEl.addEventListener("click", e=>{
+    const card=e.target.closest(".card"); if(!card) return;
+    playCard(card.dataset.el);
+  });
+  $("resetBtn").onclick=reset;
+  $("playAgain").onclick=()=>{ $("endOverlay").classList.remove("show"); reset(); };
+  $("toGallery").onclick=()=>{ $("endOverlay").classList.remove("show"); openGallery(); };
+  $("openGallery").onclick=openGallery;
+  $("closeGallery").onclick=()=>{ $("galleryOverlay").classList.remove("show"); reset(); };
+
+  // expose for debugging / tuning
+  window.__genesis = {simulate, classify, FATES};
+
+  updateMedalUI();
+  reset();
+})();
+</script>
+</body>
+</html>
