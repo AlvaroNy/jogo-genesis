@@ -9,7 +9,7 @@
   :root{
     --bg1:#0b1020; --bg2:#141a33; --panel:rgba(255,255,255,.06); --panel-b:rgba(255,255,255,.12);
     --txt:#eaf0ff; --muted:#9aa6cc; --gold:#f6c453;
-    --fogo:#ff6a3d; --agua:#3d9bff; --terra:#8b6b45; --ar:#b9c6e6;
+    --fogo:#ff6a3d; --agua:#3d9bff; --terra:#b98d54; --ar:#c8d6f5;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
   html,body{height:100%}
@@ -19,61 +19,86 @@
     min-height:100vh; display:flex; flex-direction:column; align-items:center;
     padding:18px 14px 30px; user-select:none; overflow-x:hidden;
   }
-  .wrap{width:100%; max-width:520px}
+  .wrap{width:100%; max-width:520px; position:relative; z-index:1}
 
-  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px}
   .title{font-size:26px; font-weight:800; letter-spacing:.04em}
   .title small{display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.22em; text-transform:uppercase}
-  .medals-btn{
+  .topbtns{display:flex; gap:8px; align-items:center}
+  .iconbtn, .medals-btn{
     background:var(--panel); border:1px solid var(--panel-b); color:var(--txt);
-    padding:9px 14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:14px;
+    border-radius:12px; cursor:pointer; font-weight:700; font-size:14px;
   }
+  .medals-btn{padding:9px 14px}
   .medals-btn b{color:var(--gold)}
+  .iconbtn{width:40px; height:40px; font-size:17px; display:flex; align-items:center; justify-content:center}
+  .iconbtn:active,.medals-btn:active{transform:translateY(1px)}
 
   .scene{
     background:linear-gradient(180deg,var(--bg2),rgba(20,26,51,.4));
     border:1px solid var(--panel-b); border-radius:20px; padding:16px; text-align:center;
     position:relative; overflow:hidden;
   }
-  .scene .lvl{font-size:12px; color:var(--muted); letter-spacing:.15em; text-transform:uppercase}
+  #fx{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:3}
+  .scene .lvl{font-size:12px; color:var(--muted); letter-spacing:.15em; text-transform:uppercase; position:relative; z-index:4}
+
+  .world-slot{position:relative; width:170px; height:170px; margin:10px auto 8px; z-index:2}
   .world{
-    width:150px; height:150px; margin:12px auto 8px; border-radius:50%;
+    position:absolute; inset:10px; border-radius:50%;
     display:flex; align-items:center; justify-content:center; font-size:74px;
     background:radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%);
-    box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 10px 40px rgba(0,0,0,.5), inset 0 0 40px rgba(0,0,0,.5);
-    transition:background .5s ease, box-shadow .5s ease; position:relative;
+    box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 10px 40px rgba(0,0,0,.5), inset 0 -12px 30px rgba(0,0,0,.55), inset 0 10px 24px rgba(255,255,255,.12);
+    transition:background .6s ease; overflow:hidden;
   }
-  @keyframes worldPop{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+  .world .shine{position:absolute; inset:-30%; border-radius:50%;
+    background:conic-gradient(from 0deg, transparent, rgba(255,255,255,.10), transparent 40%);
+    animation:spin 14s linear infinite; mix-blend-mode:screen}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .world .emo{position:relative; z-index:2; filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))}
+  .ring{position:absolute; inset:0; border-radius:50%; border:2px solid transparent; pointer-events:none}
+  @keyframes ringPulse{0%{transform:scale(.85); opacity:.9} 100%{transform:scale(1.35); opacity:0}}
+  .ring.go{animation:ringPulse .6s ease-out}
+  @keyframes worldPop{0%{transform:scale(.9)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
   .world.bump{animation:worldPop .4s ease}
-  .story{min-height:44px; font-size:15px; line-height:1.4; color:#dfe6ff; margin:6px 4px 4px}
 
-  .stats{display:flex; gap:6px; justify-content:center; margin-top:10px; flex-wrap:wrap}
-  .stat{display:flex; align-items:center; gap:4px; font-size:12px; color:var(--muted); background:var(--panel); padding:4px 9px; border-radius:20px}
+  .story{min-height:44px; font-size:15px; line-height:1.4; color:#dfe6ff; margin:6px 4px 4px; position:relative; z-index:4}
+  @keyframes storyIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+  .story.in{animation:storyIn .35s ease}
+
+  .stats{display:flex; gap:6px; justify-content:center; margin-top:10px; flex-wrap:wrap; position:relative; z-index:4}
+  .stat{display:flex; align-items:center; gap:4px; font-size:12px; color:var(--muted); background:var(--panel); padding:4px 9px; border-radius:20px; transition:transform .2s}
   .stat b{color:var(--txt); font-variant-numeric:tabular-nums}
+  @keyframes statPop{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+  .stat.changed{animation:statPop .4s ease}
 
   .slots{display:flex; gap:10px; justify-content:center; margin:16px 0}
   .slot{
     width:56px; height:72px; border-radius:12px; border:2px dashed var(--panel-b);
     display:flex; align-items:center; justify-content:center; font-size:30px; color:var(--muted);
-    background:var(--panel);
-  }
+    background:var(--panel); transition:transform .2s}
   .slot.filled{border-style:solid; border-color:transparent; color:#fff}
+  @keyframes slotDrop{0%{transform:translateY(-18px) scale(.6); opacity:0}70%{transform:translateY(3px) scale(1.1)}100%{transform:none; opacity:1}}
+  .slot.filled .in{display:inline-block; animation:slotDrop .3s ease}
 
   .hand{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:6px}
   .card{
     position:relative; border:1px solid var(--panel-b); border-radius:16px; padding:14px 6px 10px;
     background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
-    cursor:pointer; text-align:center; transition:transform .1s ease, box-shadow .2s ease, border-color .2s;
+    cursor:pointer; text-align:center; transition:transform .1s ease, box-shadow .2s ease, border-color .2s; overflow:hidden;
   }
-  .card:hover{transform:translateY(-3px)}
-  .card:active{transform:translateY(0)}
-  .card .emoji{font-size:34px; line-height:1}
-  .card .name{font-size:12px; font-weight:700; margin-top:6px; letter-spacing:.03em}
-  .card[data-el="fogo"]{box-shadow:inset 0 -22px 30px -24px var(--fogo)} .card[data-el="fogo"]:hover{border-color:var(--fogo)}
-  .card[data-el="agua"]{box-shadow:inset 0 -22px 30px -24px var(--agua)} .card[data-el="agua"]:hover{border-color:var(--agua)}
-  .card[data-el="terra"]{box-shadow:inset 0 -22px 30px -24px var(--terra)} .card[data-el="terra"]:hover{border-color:var(--terra)}
-  .card[data-el="ar"]{box-shadow:inset 0 -22px 30px -24px var(--ar)} .card[data-el="ar"]:hover{border-color:var(--ar)}
+  .card:hover{transform:translateY(-4px)}
+  .card:active{transform:translateY(-1px) scale(.97)}
+  .card .emoji{font-size:34px; line-height:1; position:relative; z-index:2}
+  .card .name{font-size:12px; font-weight:700; margin-top:6px; letter-spacing:.03em; position:relative; z-index:2}
+  .card .glow{position:absolute; left:50%; bottom:-30%; width:120%; height:70%; transform:translateX(-50%);
+    border-radius:50%; opacity:.55; filter:blur(14px)}
+  .card[data-el="fogo"] .glow{background:var(--fogo)} .card[data-el="fogo"]:hover{border-color:var(--fogo)}
+  .card[data-el="agua"] .glow{background:var(--agua)} .card[data-el="agua"]:hover{border-color:var(--agua)}
+  .card[data-el="terra"] .glow{background:var(--terra)} .card[data-el="terra"]:hover{border-color:var(--terra)}
+  .card[data-el="ar"] .glow{background:var(--ar)} .card[data-el="ar"]:hover{border-color:var(--ar)}
   .card.disabled{opacity:.4; pointer-events:none}
+  @keyframes cardZap{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}100%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
+  .card.zap{animation:cardZap .4s ease-out}
 
   .actions{display:flex; gap:10px; margin-top:14px}
   .btn{
@@ -84,26 +109,30 @@
   .btn:active{transform:translateY(1px)}
   .hidden{display:none !important}
 
-  /* ending overlay */
   .overlay{position:fixed; inset:0; background:rgba(6,9,20,.82); backdrop-filter:blur(6px);
     display:none; align-items:center; justify-content:center; padding:20px; z-index:50}
   .overlay.show{display:flex; animation:fade .3s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .modal{width:100%; max-width:400px; background:linear-gradient(180deg,#1a2244,#10152b);
-    border:1px solid var(--panel-b); border-radius:22px; padding:24px; text-align:center}
-  .modal .badge{font-size:76px; line-height:1; margin:4px 0 6px; filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}
-  @keyframes badgeIn{0%{transform:scale(0) rotate(-25deg)}70%{transform:scale(1.15) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
-  .modal .badge.anim{animation:badgeIn .5s cubic-bezier(.2,1.3,.4,1)}
+    border:1px solid var(--panel-b); border-radius:22px; padding:24px; text-align:center; position:relative; overflow:hidden}
+  .modal .halo{position:absolute; top:-40px; left:50%; transform:translateX(-50%); width:220px; height:220px;
+    border-radius:50%; filter:blur(46px); opacity:.5; z-index:0}
+  .modal>*{position:relative; z-index:1}
+  .modal .badge{font-size:78px; line-height:1; margin:4px 0 6px; filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}
+  @keyframes badgeIn{0%{transform:scale(0) rotate(-25deg)}70%{transform:scale(1.18) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
+  .modal .badge.anim{animation:badgeIn .55s cubic-bezier(.2,1.3,.4,1)}
   .modal h2{font-size:24px; margin-bottom:4px}
   .modal .kind{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px}
   .modal p{font-size:15px; line-height:1.5; color:#dbe3ff; margin-bottom:8px}
   .modal .newtag{display:inline-block; background:var(--gold); color:#231a02; font-weight:800;
     font-size:12px; padding:4px 10px; border-radius:20px; margin:6px 0 12px; letter-spacing:.05em}
+  @keyframes tagPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .modal .newtag{animation:tagPulse 1.1s ease-in-out infinite}
   .modal .seq{font-size:22px; letter-spacing:.15em; margin:6px 0 16px}
 
-  /* gallery */
   .gallery-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:6px 0 16px; text-align:left}
   .gcell{background:var(--panel); border:1px solid var(--panel-b); border-radius:14px; padding:12px; display:flex; gap:10px; align-items:flex-start}
+  .gcell.win{border-color:rgba(246,196,83,.35)}
   .gcell .ge{font-size:32px; line-height:1}
   .gcell.locked .ge{filter:grayscale(1) opacity(.5)}
   .gcell .gt{font-size:14px; font-weight:800}
@@ -118,13 +147,20 @@
 <div class="wrap">
   <div class="topbar">
     <div class="title">Gênesis<small>crie um mundo</small></div>
-    <button class="medals-btn" id="openGallery">🏅 Emblemas <b id="medalCount">0</b>/8</button>
+    <div class="topbtns">
+      <button class="iconbtn" id="muteBtn" title="Som">🔊</button>
+      <button class="medals-btn" id="openGallery">🏅 <b id="medalCount">0</b>/8</button>
+    </div>
   </div>
 
   <div class="scene">
+    <canvas id="fx"></canvas>
     <div class="lvl" id="lvlName">Nível 1 — O Mundo Vazio</div>
-    <div class="world" id="world">🌑</div>
-    <div class="story" id="story">Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.</div>
+    <div class="world-slot">
+      <div class="ring" id="ring"></div>
+      <div class="world" id="world"><div class="shine"></div><span class="emo" id="worldEmo">🌑</span></div>
+    </div>
+    <div class="story in" id="story">Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.</div>
     <div class="stats" id="stats"></div>
   </div>
 
@@ -133,10 +169,10 @@
   </div>
 
   <div class="hand" id="hand">
-    <div class="card" data-el="fogo"><div class="emoji">🔥</div><div class="name">FOGO</div></div>
-    <div class="card" data-el="agua"><div class="emoji">💧</div><div class="name">ÁGUA</div></div>
-    <div class="card" data-el="terra"><div class="emoji">🌍</div><div class="name">TERRA</div></div>
-    <div class="card" data-el="ar"><div class="emoji">💨</div><div class="name">AR</div></div>
+    <div class="card" data-el="fogo"><div class="glow"></div><div class="emoji">🔥</div><div class="name">FOGO</div></div>
+    <div class="card" data-el="agua"><div class="glow"></div><div class="emoji">💧</div><div class="name">ÁGUA</div></div>
+    <div class="card" data-el="terra"><div class="glow"></div><div class="emoji">🌍</div><div class="name">TERRA</div></div>
+    <div class="card" data-el="ar"><div class="glow"></div><div class="emoji">💨</div><div class="name">AR</div></div>
   </div>
 
   <div class="actions">
@@ -144,9 +180,9 @@
   </div>
 </div>
 
-<!-- Ending modal -->
 <div class="overlay" id="endOverlay">
   <div class="modal">
+    <div class="halo" id="endHalo"></div>
     <div class="badge anim" id="endBadge">🌳</div>
     <div class="kind" id="endKind">Final desbloqueado</div>
     <h2 id="endTitle">Mundo Vivo</h2>
@@ -160,7 +196,6 @@
   </div>
 </div>
 
-<!-- Gallery modal -->
 <div class="overlay" id="galleryOverlay">
   <div class="modal">
     <div class="kind">Coleção de destinos</div>
@@ -176,50 +211,42 @@
 <script>
 (function(){
   "use strict";
+  const $ = id=>document.getElementById(id);
 
   // ---------- ELEMENTS ----------
   const EL = {
-    fogo:  {emoji:"🔥", name:"Fogo"},
-    agua:  {emoji:"💧", name:"Água"},
-    terra: {emoji:"🌍", name:"Terra"},
-    ar:    {emoji:"💨", name:"Ar"},
+    fogo:  {emoji:"🔥", name:"Fogo",  color:"#ff6a3d", color2:"#ffc24d"},
+    agua:  {emoji:"💧", name:"Água",  color:"#3d9bff", color2:"#9fe0ff"},
+    terra: {emoji:"🌍", name:"Terra", color:"#b98d54", color2:"#e6c48a"},
+    ar:    {emoji:"💨", name:"Ar",    color:"#c8d6f5", color2:"#ffffff"},
   };
 
   // ---------- GAME LOGIC (order matters!) ----------
   function newState(){ return {heat:0, water:0, land:0, life:0, chaos:0}; }
-
-  // Apply one element to the world. Effects depend on the CURRENT state -> order matters.
   function applyCard(prev, el){
     const s = {...prev};
     if(el==="fogo"){
       s.heat += 2;
-      if(prev.water>0){ s.water -= 2; s.chaos += 2; }   // ferve a água (explosão de vapor)
-      if(prev.life>0){ s.life -= 1; s.chaos += 1; }      // queima a vida
+      if(prev.water>0){ s.water -= 2; s.chaos += 2; }
+      if(prev.life>0){ s.life -= 1; s.chaos += 1; }
     } else if(el==="agua"){
       s.water += 2;
-      s.heat -= 1;                                        // sempre esfria
-      if(prev.heat>=2){ s.chaos += 2; }                  // choque violento de vapor
-      if(prev.land>0 && s.life<3){ s.life += 1; }        // terra + água = vida
+      s.heat -= 1;
+      if(prev.heat>=2){ s.chaos += 2; }
+      if(prev.land>0 && s.life<3){ s.life += 1; }
     } else if(el==="terra"){
       s.land += 2;
-      if(s.chaos>0) s.chaos -= 1;                         // estabiliza
-      if(prev.water>=2 && s.life<3){ s.life += 1; }      // solo fértil
+      if(s.chaos>0) s.chaos -= 1;
+      if(prev.water>=2 && s.life<3){ s.life += 1; }
     } else if(el==="ar"){
       s.chaos += 1;
-      if(prev.heat>=2){ s.heat += 1; s.chaos += 1; }     // atiça as chamas (incêndio caótico)
-      if(prev.water>=3){ s.water += 1; }                 // tempestade
-      if(prev.life>0 && s.life<3){ s.life += 1; }        // espalha a vida
+      if(prev.heat>=2){ s.heat += 1; s.chaos += 1; }
+      if(prev.water>=3){ s.water += 1; }
+      if(prev.life>0 && s.life<3){ s.life += 1; }
     }
     return s;
   }
-
-  function simulate(seq){
-    let s = newState();
-    for(const el of seq) s = applyCard(s, el);
-    return s;
-  }
-
-  // Map final world state -> one of 8 fates (priority order)
+  function simulate(seq){ let s=newState(); for(const el of seq) s=applyCard(s,el); return s; }
   function classify(s){
     if(s.chaos>=4) return "cataclismo";
     if(s.life>=2) return "eden";
@@ -234,21 +261,21 @@
 
   // ---------- FATES ----------
   const FATES = {
-    eden:      {emoji:"🌳", badge:"🌳", title:"Mundo Vivo", kind:"win",  hint:"Prepare a terra, depois traga a água — e deixe a vida se espalhar.",
+    eden:      {emoji:"🌳", badge:"🌳", title:"Mundo Vivo", kind:"win", color:"#54c07a", hint:"Prepare a terra, depois traga a água — e deixe a vida se espalhar.",
                 text:"Terra, água e ar em harmonia. Florestas cobrem o mundo e a vida floresce. Você criou um Éden."},
-    inferno:   {emoji:"🌋", badge:"🔥", title:"Mundo em Chamas", kind:"win", hint:"Apenas fogo, e nada que o apague.",
+    inferno:   {emoji:"🌋", badge:"🔥", title:"Mundo em Chamas", kind:"win", color:"#ff6a3d", hint:"Apenas fogo, e nada que o apague.",
                 text:"Rios de lava, céus de fumaça. Sem água que as contenha, as chamas reinam para sempre."},
-    diluvio:   {emoji:"🌊", badge:"💧", title:"O Grande Dilúvio", kind:"win", hint:"Uma faísca de calor primeiro — depois águas e mais águas para afogar o mundo.",
+    diluvio:   {emoji:"🌊", badge:"💧", title:"O Grande Dilúvio", kind:"win", color:"#3d9bff", hint:"Uma faísca de calor primeiro — depois águas e mais águas para afogar o mundo.",
                 text:"As águas subiram sem parar até engolir tudo. Um oceano infinito, silencioso e profundo."},
-    gelo:      {emoji:"❄️", badge:"❄️", title:"Mundo Congelado", kind:"win", hint:"Só água, água e mais água — sem nenhum calor, até tudo virar gelo.",
+    gelo:      {emoji:"❄️", badge:"❄️", title:"Mundo Congelado", kind:"win", color:"#bfe4ff", hint:"Só água, água e mais água — sem nenhum calor, até tudo virar gelo.",
                 text:"O calor se esvaiu e as águas viraram gelo eterno. Um mundo branco, imóvel e cristalino."},
-    deserto:   {emoji:"🏜️", badge:"🏜️", title:"Deserto Sem Fim", kind:"win", hint:"Terra e fogo, mas negue-lhe toda a água.",
+    deserto:   {emoji:"🏜️", badge:"🏜️", title:"Deserto Sem Fim", kind:"win", color:"#e6c48a", hint:"Terra e fogo, mas negue-lhe toda a água.",
                 text:"Terra firme cozida pelo sol. Sem uma gota d'água, só dunas se estendem até o horizonte."},
-    pedra:     {emoji:"🗿", badge:"🗿", title:"Mundo de Pedra", kind:"win", hint:"Só rocha sobre rocha — sem água, sem vida.",
+    pedra:     {emoji:"🗿", badge:"🗿", title:"Mundo de Pedra", kind:"win", color:"#a79b8c", hint:"Só rocha sobre rocha — sem água, sem vida.",
                 text:"Montanhas nuas e planícies de rocha. Sólido, eterno... e completamente sem vida."},
-    cataclismo:{emoji:"💥", badge:"☄️", title:"O Cataclismo", kind:"lose", hint:"Force elementos demais a colidir de uma vez.",
+    cataclismo:{emoji:"💥", badge:"☄️", title:"O Cataclismo", kind:"lose", color:"#ff4d4d", hint:"Force elementos demais a colidir de uma vez.",
                 text:"Fogo contra água, ordem contra caos. A tensão foi grande demais — o mundo se despedaçou."},
-    vazio:     {emoji:"🕳️", badge:"⚫", title:"O Vazio Permanece", kind:"lose", hint:"Misture opostos até um anular o outro — e nada chega a tomar forma.",
+    vazio:     {emoji:"🕳️", badge:"⚫", title:"O Vazio Permanece", kind:"lose", color:"#6b7699", hint:"Misture opostos até um anular o outro — e nada chega a tomar forma.",
                 text:"Os elementos se anularam entre si. Onde poderia surgir um mundo, restou apenas o vazio silencioso."},
   };
   const FATE_ORDER = ["eden","inferno","diluvio","gelo","deserto","pedra","cataclismo","vazio"];
@@ -306,49 +333,172 @@
     return "";
   }
 
+  // ================= AUDIO (Web Audio, synth — no files) =================
+  const Audio = (function(){
+    let ctx=null, master=null;
+    let muted = localStorage.getItem("genesis_muted")==="1";
+    function ensure(){
+      if(ctx) return;
+      const AC = window.AudioContext||window.webkitAudioContext;
+      if(!AC) return;
+      ctx = new AC();
+      master = ctx.createGain(); master.gain.value=0.5; master.connect(ctx.destination);
+    }
+    function now(){ return ctx.currentTime; }
+    function tone(freq, t0, dur, type, vol, glideTo){
+      if(!ctx) return;
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type||"sine"; o.frequency.setValueAtTime(freq, t0);
+      if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0+dur);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol, t0+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+      o.connect(g); g.connect(master); o.start(t0); o.stop(t0+dur+0.02);
+    }
+    function noise(t0, dur, vol, filterType, freq){
+      if(!ctx) return;
+      const n = ctx.createBufferSource();
+      const buf = ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1);
+      n.buffer=buf;
+      const f=ctx.createBiquadFilter(); f.type=filterType||"lowpass"; f.frequency.value=freq||800;
+      const g=ctx.createGain();
+      g.gain.setValueAtTime(vol, t0);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+      n.connect(f); f.connect(g); g.connect(master); n.start(t0); n.stop(t0+dur);
+    }
+    function element(el){
+      if(muted) return; ensure(); if(!ctx) return;
+      if(ctx.state==="suspended") ctx.resume();
+      const t=now();
+      if(el==="fogo"){ noise(t,0.35,0.35,"highpass",900); tone(180,t,0.25,"sawtooth",0.12,90); }
+      else if(el==="agua"){ tone(680,t,0.28,"sine",0.18,240); tone(520,t+0.06,0.22,"sine",0.10,200); }
+      else if(el==="terra"){ tone(90,t,0.32,"square",0.20,60); noise(t,0.12,0.12,"lowpass",200); }
+      else if(el==="ar"){ noise(t,0.4,0.16,"bandpass",1400); tone(900,t,0.3,"triangle",0.06,1600); }
+    }
+    function chord(freqs, t0, dur, type, vol){ freqs.forEach(f=>tone(f,t0,dur,type||"triangle",vol||0.14)); }
+    function win(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+      const t=now(); const s=[523,659,784,1047]; s.forEach((f,i)=>tone(f,t+i*0.09,0.5,"triangle",0.16)); chord([262,392],t+0.28,0.7,"sine",0.10); }
+    function lose(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+      const t=now(); tone(300,t,0.6,"sawtooth",0.16,120); tone(200,t+0.12,0.7,"sine",0.12,90); }
+    function boom(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+      const t=now(); noise(t,0.7,0.5,"lowpass",300); tone(70,t,0.6,"square",0.25,40); }
+    function unlock(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+      const t=now(); [784,1047,1319].forEach((f,i)=>tone(f,t+i*0.07,0.4,"triangle",0.15)); }
+    function click(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+      tone(420,now(),0.08,"triangle",0.08); }
+    function toggle(){ muted=!muted; localStorage.setItem("genesis_muted", muted?"1":"0"); return muted; }
+    return {element,win,lose,boom,unlock,click, toggle, isMuted:()=>muted, ensure};
+  })();
+
+  // ================= PARTICLES (canvas) =================
+  const FX = (function(){
+    const cv=$("fx"); const g=cv.getContext("2d");
+    let W=0,H=0,dpr=1, parts=[], raf=null;
+    function resize(){
+      const r=cv.getBoundingClientRect(); dpr=Math.min(2, window.devicePixelRatio||1);
+      W=r.width; H=r.height; cv.width=W*dpr; cv.height=H*dpr; g.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function worldCenter(){
+      const wr=$("world").getBoundingClientRect(), cr=cv.getBoundingClientRect();
+      return {x:wr.left-cr.left+wr.width/2, y:wr.top-cr.top+wr.height/2, r:wr.width/2};
+    }
+    function spawn(el, big){
+      const c=worldCenter(); const info=EL[el]||{color:"#fff",color2:"#fff"};
+      const n = big? 46 : 22;
+      for(let i=0;i<n;i++){
+        const ang=Math.random()*Math.PI*2, sp=(big?1.6:1)*(1+Math.random()*2.6);
+        let vx=Math.cos(ang)*sp, vy=Math.sin(ang)*sp, grav=0, life=40+Math.random()*30, size=2+Math.random()*3;
+        if(el==="fogo"){ vy=-Math.abs(vy)-0.6; grav=-0.03; }
+        else if(el==="agua"){ grav=0.10; }
+        else if(el==="terra"){ vy=Math.abs(vy)*0.4; grav=0.14; size=2+Math.random()*4; }
+        else if(el==="ar"){ grav=0; life=50+Math.random()*30; }
+        const col = Math.random()<0.5? info.color : info.color2;
+        parts.push({x:c.x+Math.cos(ang)*c.r*0.5, y:c.y+Math.sin(ang)*c.r*0.5, vx,vy,grav,life,max:life,size,col});
+      }
+      loop();
+    }
+    function burst(color, n){
+      const c=worldCenter();
+      for(let i=0;i<(n||60);i++){
+        const ang=Math.random()*Math.PI*2, sp=1+Math.random()*4.5;
+        parts.push({x:c.x,y:c.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,grav:0.03,life:50+Math.random()*40,max:90,size:2+Math.random()*3,col:color});
+      }
+      loop();
+    }
+    function loop(){
+      if(raf) return;
+      const step=()=>{
+        g.clearRect(0,0,W,H);
+        for(let i=parts.length-1;i>=0;i--){
+          const p=parts[i]; p.vx*=0.98; p.vy=p.vy*0.98+p.grav; p.x+=p.vx; p.y+=p.vy; p.life--;
+          if(p.life<=0){ parts.splice(i,1); continue; }
+          g.globalAlpha=Math.max(0, p.life/p.max); g.fillStyle=p.col;
+          g.beginPath(); g.arc(p.x,p.y,p.size,0,Math.PI*2); g.fill();
+        }
+        g.globalAlpha=1;
+        if(parts.length){ raf=requestAnimationFrame(step); } else { raf=null; }
+      };
+      raf=requestAnimationFrame(step);
+    }
+    window.addEventListener("resize", resize);
+    setTimeout(resize,50);
+    return {spawn, burst, resize};
+  })();
+
   // ---------- STATE / DOM ----------
-  const $ = id=>document.getElementById(id);
-  const worldEl=$("world"), storyEl=$("story"), statsEl=$("stats"), slotsEl=$("slots"), handEl=$("hand");
-  let seq=[], state=newState(), busy=false;
+  const worldEl=$("world"), worldEmo=$("worldEmo"), storyEl=$("story"), statsEl=$("stats"),
+        slotsEl=$("slots"), handEl=$("hand"), ringEl=$("ring");
+  let seq=[], state=newState(), busy=false, prevStats=null;
 
   let unlocked = {};
   try{ unlocked = JSON.parse(localStorage.getItem("genesis_unlocked")||"{}"); }catch(e){ unlocked={}; }
-
   function save(){ localStorage.setItem("genesis_unlocked", JSON.stringify(unlocked)); }
   function medalCount(){ return Object.keys(unlocked).length; }
 
   function renderStats(s){
-    const items=[["🌡️",s.heat],["💧",s.water],["⛰️",s.land],["🌿",s.life],["⚡",s.chaos]];
-    statsEl.innerHTML = items.map(([ic,v])=>`<span class="stat">${ic} <b>${v}</b></span>`).join("");
+    const items=[["🌡️",s.heat,"heat"],["💧",s.water,"water"],["⛰️",s.land,"land"],["🌿",s.life,"life"],["⚡",s.chaos,"chaos"]];
+    statsEl.innerHTML = items.map(([ic,v,k])=>{
+      const changed = prevStats && prevStats[k]!==v ? " changed":"";
+      return `<span class="stat${changed}">${ic} <b>${v}</b></span>`;
+    }).join("");
+    prevStats = {...s};
   }
   function renderSlots(){
-    const cells=[0,1,2].map(i=>{
-      if(seq[i]) return `<div class="slot filled">${EL[seq[i]].emoji}</div>`;
+    slotsEl.innerHTML = [0,1,2].map(i=>{
+      if(seq[i]) return `<div class="slot filled"><span class="in">${EL[seq[i]].emoji}</span></div>`;
       return `<div class="slot">${i+1}</div>`;
-    });
-    slotsEl.innerHTML = cells.join("");
+    }).join("");
   }
-  function updateMedalUI(){
-    $("medalCount").textContent = medalCount();
-  }
-
+  function updateMedalUI(){ $("medalCount").textContent = medalCount(); }
   function bumpWorld(){ worldEl.classList.remove("bump"); void worldEl.offsetWidth; worldEl.classList.add("bump"); }
+  function setStory(t){ storyEl.textContent=t; storyEl.classList.remove("in"); void storyEl.offsetWidth; storyEl.classList.add("in"); }
+  function pulseRing(color){
+    ringEl.style.borderColor=color; ringEl.classList.remove("go"); void ringEl.offsetWidth; ringEl.classList.add("go");
+  }
 
   function reset(){
-    seq=[]; state=newState(); busy=false;
-    worldEl.textContent="🌑"; worldEl.style.background=worldBg(state);
-    storyEl.textContent="Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.";
+    seq=[]; state=newState(); busy=false; prevStats=null;
+    worldEmo.textContent="🌑"; worldEl.style.background=worldBg(state);
+    setStory("Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.");
     renderStats(state); renderSlots();
     [...handEl.children].forEach(c=>c.classList.remove("disabled"));
   }
 
   function playCard(el){
     if(busy || seq.length>=3) return;
+    Audio.element(el);
+    FX.spawn(el, false);
+    pulseRing(EL[el].color);
+    const card=handEl.querySelector('.card[data-el="'+el+'"]');
+    card.classList.remove("zap"); void card.offsetWidth; card.classList.add("zap");
+
     const prev=state;
     state=applyCard(prev, el);
     seq.push(el);
-    storyEl.textContent=reaction(prev, el);
-    worldEl.textContent=worldEmoji(state, false);
+    setStory(reaction(prev, el));
+    worldEmo.textContent=worldEmoji(state, false);
     worldEl.style.background=worldBg(state);
     bumpWorld();
     renderStats(state); renderSlots();
@@ -356,66 +506,62 @@
     if(seq.length>=3){
       busy=true;
       [...handEl.children].forEach(c=>c.classList.add("disabled"));
-      setTimeout(finish, 750);
+      setTimeout(finish, 800);
     }
   }
 
   function finish(){
     const fateId=classify(state);
     const fate=FATES[fateId];
-    worldEl.textContent=worldEmoji(state, true);
+    worldEmo.textContent=worldEmoji(state, true);
     worldEl.style.background=worldBg(state);
     bumpWorld();
+    FX.burst(fate.color, fate.kind==="lose"?70:60);
+    if(fateId==="cataclismo") Audio.boom();
+    else if(fate.kind==="lose") Audio.lose();
+    else Audio.win();
 
     const isNew = !unlocked[fateId];
     if(isNew){ unlocked[fateId]={seq:[...seq]}; save(); }
     updateMedalUI();
 
-    // fill modal
+    $("endHalo").style.background=fate.color;
     const b=$("endBadge"); b.textContent=fate.badge; b.classList.remove("anim"); void b.offsetWidth; b.classList.add("anim");
     $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : "Final desbloqueado";
     $("endTitle").textContent = fate.emoji+" "+fate.title;
     $("endText").textContent = fate.text;
     $("endSeq").textContent = seq.map(e=>EL[e].emoji).join(" ");
     $("newTag").classList.toggle("hidden", !isNew);
-    $("endOverlay").classList.add("show");
+    setTimeout(()=>{ if(isNew) Audio.unlock(); $("endOverlay").classList.add("show"); }, 620);
   }
 
-  // ---------- GALLERY ----------
   function openGallery(){
     $("galleryCount").textContent = medalCount();
-    const grid=$("galleryGrid");
-    grid.innerHTML = FATE_ORDER.map(id=>{
+    $("galleryGrid").innerHTML = FATE_ORDER.map(id=>{
       const f=FATES[id], got=unlocked[id];
       if(got){
         const s=got.seq.map(e=>EL[e].emoji).join(" ");
-        return `<div class="gcell">
-            <div class="ge">${f.badge}</div>
-            <div><div class="gt">${f.title}</div>
-            <div class="gseq">${s}</div></div></div>`;
+        return `<div class="gcell ${f.kind}"><div class="ge">${f.badge}</div>
+            <div><div class="gt">${f.title}</div><div class="gseq">${s}</div></div></div>`;
       }
-      return `<div class="gcell locked">
-          <div class="ge">🔒</div>
-          <div><div class="gt">? ? ?</div>
-          <div class="gh">${f.hint}</div></div></div>`;
+      return `<div class="gcell locked"><div class="ge">🔒</div>
+          <div><div class="gt">? ? ?</div><div class="gh">${f.hint}</div></div></div>`;
     }).join("");
     $("galleryOverlay").classList.add("show");
   }
 
   // ---------- EVENTS ----------
-  handEl.addEventListener("click", e=>{
-    const card=e.target.closest(".card"); if(!card) return;
-    playCard(card.dataset.el);
-  });
-  $("resetBtn").onclick=reset;
-  $("playAgain").onclick=()=>{ $("endOverlay").classList.remove("show"); reset(); };
-  $("toGallery").onclick=()=>{ $("endOverlay").classList.remove("show"); openGallery(); };
-  $("openGallery").onclick=openGallery;
-  $("closeGallery").onclick=()=>{ $("galleryOverlay").classList.remove("show"); reset(); };
+  handEl.addEventListener("click", e=>{ const c=e.target.closest(".card"); if(c) playCard(c.dataset.el); });
+  $("resetBtn").onclick=()=>{ Audio.click(); reset(); };
+  $("playAgain").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); reset(); };
+  $("toGallery").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); openGallery(); };
+  $("openGallery").onclick=()=>{ Audio.click(); openGallery(); };
+  $("closeGallery").onclick=()=>{ Audio.click(); $("galleryOverlay").classList.remove("show"); reset(); };
+  $("muteBtn").onclick=()=>{ const m=Audio.toggle(); $("muteBtn").textContent=m?"🔇":"🔊"; if(!m){ Audio.ensure(); Audio.click(); } };
 
-  // expose for debugging / tuning
+  // init
+  $("muteBtn").textContent = Audio.isMuted()?"🔇":"🔊";
   window.__genesis = {simulate, classify, FATES};
-
   updateMedalUI();
   reset();
 })();
