@@ -55,6 +55,22 @@
   .menu-orb .ico{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:66px; z-index:2;
     filter:drop-shadow(0 4px 10px rgba(0,0,0,.5)); animation:float 4s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(-4px)}50%{transform:translateY(6px)}}
+  .menu-orb{cursor:pointer}
+  @keyframes orbBounce{0%{transform:scale(1)}40%{transform:scale(.86)}100%{transform:scale(1)}}
+  .menu-orb.tap{animation:orbBounce .3s ease}
+  /* easter egg */
+  .eggbox{max-width:400px; text-align:center; overflow:hidden}
+  .egg-orb{width:120px; height:120px; margin:2px auto 14px; position:relative}
+  .egg-orb .egg-core{position:absolute; inset:0; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#b070ff,#160a2a 70%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.12), 0 16px 50px rgba(150,80,240,.5), inset 0 -12px 28px rgba(0,0,0,.5), inset 0 10px 22px rgba(255,255,255,.18); overflow:hidden}
+  .egg-orb .egg-core::after{content:""; position:absolute; inset:-30%; border-radius:50%;
+    background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.16),transparent 42%); animation:spin 8s linear infinite; mix-blend-mode:screen}
+  .egg-orb .egg-ico{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:56px; z-index:2; animation:float 4s ease-in-out infinite}
+  .eggbox h2{font-size:23px; margin:2px 0 12px}
+  .eggbox p{font-size:14.5px; line-height:1.55; color:#dbe3ff; margin-bottom:10px}
+  .eggbox .sig{font-weight:800; color:var(--gold); font-size:15px; margin:12px 0 4px}
+  .eggbox .whisper{font-size:12px; color:var(--muted); font-style:italic; margin-bottom:14px}
   @keyframes spin{to{transform:rotate(360deg)}}
   .orbit{position:absolute; inset:-14px; border-radius:50%; animation:spin 20s linear infinite}
   .orbit span{position:absolute; top:-4px; left:50%; transform:translateX(-50%); font-size:20px}
@@ -259,7 +275,7 @@
   <div class="menu">
     <div class="brand">GÊNESIS</div>
     <div class="tagline">8 mundos para criar — e descobrir seus destinos</div>
-    <div class="menu-orb">
+    <div class="menu-orb" id="menuOrb" title="">
       <div class="orbit"><span>🔥</span></div>
       <div class="core"></div>
       <div class="ico">🌌</div>
@@ -348,6 +364,19 @@
     <div class="progress"><b id="galleryCount">0</b> de 8 destinos descobertos</div>
     <div class="gallery-grid" id="galleryGrid"></div>
     <div class="actions"><button class="btn" id="closeGallery">Voltar a jogar</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="eggOverlay" style="z-index:90">
+  <div class="modal eggbox">
+    <div class="egg-orb"><div class="egg-core"></div><div class="egg-ico">🌌</div></div>
+    <div class="kind">✨ Segredo Descoberto ✨</div>
+    <h2>A Sala Secreta</h2>
+    <p>No princípio, havia só uma ideia e um globo girando no vazio.<br>
+    Dela nasceram <b>8 mundos</b>, <b>64 destinos</b> e um universo secreto.</p>
+    <div class="sig">Feito com ♥ por Álvaro Nayder</div>
+    <div class="whisper">Obrigado por explorar até aqui, criador.</div>
+    <div class="actions"><button class="btn" id="eggClose">Voltar ao início</button></div>
   </div>
 </div>
 
@@ -1498,6 +1527,16 @@
     window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank","noopener");
   };
   $("backToMenu").onclick=()=>{ Audio.click(); showScreen("s-menu"); };
+  // easter egg: 5 cliques seguidos no globo
+  let orbClicks=0, orbTimer=null;
+  $("menuOrb").addEventListener("click", ()=>{
+    const orb=$("menuOrb"); orb.classList.remove("tap"); void orb.offsetWidth; orb.classList.add("tap");
+    Audio.ensure(); Audio.click();
+    orbClicks++;
+    clearTimeout(orbTimer); orbTimer=setTimeout(()=>{ orbClicks=0; }, 1600);
+    if(orbClicks>=5){ orbClicks=0; clearTimeout(orbTimer); Audio.win(); $("eggOverlay").classList.add("show"); }
+  });
+  $("eggClose").onclick=()=>{ Audio.click(); $("eggOverlay").classList.remove("show"); };
   $("helpBtn").onclick=()=>{ Audio.click(); $("introOverlay").classList.add("show"); };
   $("introClose").onclick=()=>{ Audio.click(); $("introOverlay").classList.remove("show"); };
   $("worldsGrid").addEventListener("click", e=>{
