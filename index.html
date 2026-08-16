@@ -69,12 +69,23 @@
   .btn-sec{flex:1; padding:12px; border-radius:14px; cursor:pointer; font-weight:700; font-size:14px;
     background:var(--panel); border:1px solid var(--panel-b); color:var(--txt)}
   .btn-sec:active{transform:translateY(1px)}
+  .btn-secret{
+    padding:15px; border-radius:15px; border:1px solid rgba(166,120,255,.5); cursor:pointer; font-weight:800; font-size:16px;
+    background:linear-gradient(180deg,#3a2a6a,#241640); color:#eadcff; letter-spacing:.03em;
+    box-shadow:0 8px 24px rgba(120,80,220,.28);
+  }
+  .btn-secret.unlocked{border-color:var(--gold); color:#fff;
+    background:linear-gradient(180deg,#4a2a7a,#2a1650); box-shadow:0 0 0 1px rgba(246,196,83,.4), 0 8px 26px rgba(150,90,240,.4)}
+  .btn-secret:active{transform:translateY(2px)}
   .btn-whats{
     display:flex; align-items:center; justify-content:center; gap:9px;
     padding:14px; border-radius:14px; border:none; cursor:pointer; font-weight:800; font-size:15px;
     background:linear-gradient(180deg,#2bd66f,#1faa56); color:#04270f;
     box-shadow:0 8px 22px rgba(37,211,102,.28);
   }
+  .card .cforca{font-size:11px; margin-top:3px; letter-spacing:1px; position:relative; z-index:2}
+  .card.locked-card{opacity:.42; pointer-events:none}
+  .card.locked-card .emoji, .card.locked-card .cforca{filter:grayscale(1)}
   .btn-whats svg{width:20px; height:20px; fill:#04270f}
   .btn-whats:active{transform:translateY(2px)}
   .menu-foot{margin-top:20px; font-size:12px; color:#6b7699}
@@ -255,10 +266,7 @@
     </div>
     <div class="menu-btns">
       <button class="btn-primary" id="btnJogar">▶ Jogar</button>
-      <div class="menu-row">
-        <button class="btn-sec" id="btnEmblemasMenu">🏅 Emblemas</button>
-        <button class="btn-sec muteBtn" id="muteMenu">🔊 Som</button>
-      </div>
+      <button class="btn-secret" id="btnSecret">🔒 Nível Secreto</button>
       <button class="btn-whats" id="btnShare">
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.004 3.2c-7.06 0-12.8 5.74-12.8 12.8 0 2.257.59 4.46 1.71 6.4L3.2 28.8l6.57-1.72a12.74 12.74 0 0 0 6.234 1.62h.005c7.06 0 12.8-5.74 12.8-12.8s-5.74-12.7-12.805-12.7zm0 23.02h-.004a10.6 10.6 0 0 1-5.4-1.48l-.388-.23-4.003 1.05 1.07-3.9-.253-.4a10.56 10.56 0 0 1-1.62-5.66c0-5.86 4.77-10.62 10.63-10.62 2.84 0 5.5 1.11 7.51 3.12a10.55 10.55 0 0 1 3.11 7.51c0 5.86-4.77 10.62-10.63 10.62zm5.83-7.95c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.72.16-.21.32-.82 1.04-1.01 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.58-.95-.85-1.59-1.9-1.78-2.22-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.73-.99-2.37-.26-.62-.53-.54-.72-.55l-.61-.01c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.66s1.14 3.08 1.3 3.29c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.89-.77 2.16-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.61-.37z"/></svg>
         Compartilhar no WhatsApp
@@ -1128,7 +1136,88 @@
     fates:W8_FATES, fateOrder:["blockbuster","suspense","comediamisterio","comediaterror","aventura","ficcao","epico","bomba"],
   };
 
-  const GAMES = {1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4, 5:WORLD5, 6:WORLD6, 7:WORLD7, 8:WORLD8};
+  /* ============================================================
+     NÍVEL SECRETO — A CRIAÇÃO FINAL  (cartas = os 8 mundos)
+     Cada carta libera quando o mundo está 8/8. Use 3 (sem repetir).
+  ============================================================ */
+  const SEC_DATA = {
+    w1:{worldId:1, emoji:"🌍", name:"ELEMENTOS",   forcaIcons:"🌍",   color:"#c9a05a", fx:"heavy",  set:["mat"],       pts:{mat:2}},
+    w2:{worldId:2, emoji:"🧪", name:"QUÍMICA",     forcaIcons:"🌍🧠", color:"#6fa8d8", fx:"spread", set:["mat","men"], pts:{mat:1,men:1}},
+    w3:{worldId:3, emoji:"❤️", name:"CORAÇÃO",     forcaIcons:"💗",   color:"#ff6b9d", fx:"up",     set:["alm"],       pts:{alm:2}},
+    w4:{worldId:4, emoji:"🎨", name:"CORES",       forcaIcons:"🎨",   color:"#a678ff", fx:"spread", set:["art"],       pts:{art:2}},
+    w5:{worldId:5, emoji:"🎼", name:"COMPOSIÇÃO",  forcaIcons:"🎨💗", color:"#c78fe0", fx:"up",     set:["art","alm"], pts:{art:1,alm:1}},
+    w6:{worldId:6, emoji:"🎧", name:"MÚSICA",      forcaIcons:"💗🎨", color:"#e08fc0", fx:"spread", set:["alm","art"], pts:{alm:1,art:1}},
+    w7:{worldId:7, emoji:"🍬", name:"SABORES",     forcaIcons:"🌍💗", color:"#e0a878", fx:"down",   set:["mat","alm"], pts:{mat:1,alm:1}},
+    w8:{worldId:8, emoji:"🎬", name:"HOLLYWOOD",   forcaIcons:"🧠",   color:"#4db8ff", fx:"down",   set:["men"],       pts:{men:2}},
+  };
+  const SEC_CARDS = Object.keys(SEC_DATA).map(k=>{
+    const d=SEC_DATA[k]; return {key:k, emoji:d.emoji, name:d.name, color:d.color, fx:d.fx,
+      worldId:d.worldId, forcaIcons:d.forcaIcons};
+  });
+  function sec_new(){ return {mat:0, alm:0, art:0, men:0, harmonia:0, lastSet:null}; }
+  function sec_apply(prev, el){
+    const s={...prev}; const info=SEC_DATA[el];
+    const mult = (prev.lastSet===null) ? 2 : 1;   // 1ª carta = semente do universo (dobra)
+    for(const k in info.pts) s[k]+=info.pts[k]*mult;
+    if(prev.lastSet && prev.lastSet.some(f=>info.set.includes(f))) s.harmonia+=1;
+    s.lastSet=info.set;
+    return s;
+  }
+  function sec_rank(s){ return [["materia",s.mat],["alma",s.alm],["arte",s.art],["mente",s.men]].sort((a,b)=>b[1]-a[1]); }
+  function sec_classify(s){
+    const arr=sec_rank(s); const present=arr.filter(x=>x[1]>0).length;
+    const top=arr[0][1], second=arr[1][1];
+    if(top-second>=4) return arr[0][0];                   // uma força esmagadora
+    if(present>=3 && s.harmonia>=2) return "supremo";     // 3 forças que fluem em harmonia
+    if(present>=3 && s.harmonia===0) return "colapso";    // 3 forças sem nenhum elo -> choque
+    if(top===second) return "dualidade";                  // duas forças empatadas no topo
+    if(top-second>=2) return arr[0][0];                   // força dominante
+    return "equilibrio";                                  // forças espalhadas
+  }
+  function sec_emoji(s, done){
+    if(!done){ if(s.mat===0&&s.alm===0&&s.art===0&&s.men===0) return "🌫️"; return "🌌"; }
+    return SECRET.fates[sec_classify(s)].badge;
+  }
+  function sec_bg(s){
+    const arr=sec_rank(s);
+    if(arr[0][1]===0) return "radial-gradient(circle at 40% 30%,#3a2a5a,#0a0616 72%)";
+    const col={materia:"#c9a05a",alma:"#ff6b9d",arte:"#a678ff",mente:"#4db8ff"}[arr[0][0]];
+    return `radial-gradient(circle at 38% 32%,${col},#0a0616 74%)`;
+  }
+  function sec_react(prev, el){
+    const info=SEC_DATA[el];
+    if(prev.lastSet && prev.lastSet.some(f=>info.set.includes(f))) return "✨ As forças se encontram em harmonia — a criação flui.";
+    if(prev.lastSet) return "⚡ Forças diferentes colidem — a criação estremece.";
+    return "🌌 A primeira força é lançada no vazio primordial.";
+  }
+  const SEC_FATES = {
+    supremo:    {badge:"🌌", title:"O Universo Supremo", kind:"win", color:"#ffd76b", hint:"Combine 3 forças diferentes que fluam entre si — cada mundo compartilhando uma força com o vizinho.",
+                 text:"Três forças distintas fluíram em harmonia perfeita. Um universo completo e eterno nasce do vazio. 🌌"},
+    materia:    {badge:"🪐", title:"O Mundo de Matéria", kind:"win", color:"#c9a05a", hint:"Deixe a força da Matéria 🌍 dominar a criação.",
+                 text:"A Matéria prevaleceu. Um universo sólido de planetas, rochas e formas físicas toma forma. 🪐"},
+    alma:       {badge:"💗", title:"O Mundo Senciente", kind:"win", color:"#ff6b9d", hint:"Deixe a força da Alma 💗 dominar a criação.",
+                 text:"A Alma prevaleceu. Um universo que sente, ama e sofre — vivo em consciência. 💗"},
+    arte:       {badge:"🎨", title:"O Mundo Estético", kind:"win", color:"#a678ff", hint:"Deixe a força da Arte 🎨 dominar a criação.",
+                 text:"A Arte prevaleceu. Um universo de pura beleza, cor e som, feito para ser contemplado. 🎨"},
+    mente:      {badge:"🧠", title:"O Mundo da Razão", kind:"win", color:"#4db8ff", hint:"Deixe a força da Mente 🧠 dominar a criação.",
+                 text:"A Mente prevaleceu. Um universo de lógica, ideias e histórias infinitas. 🧠"},
+    dualidade:  {badge:"☯️", title:"O Universo Dual", kind:"win", color:"#9fb0c8", hint:"Equilibre exatamente DUAS forças no topo, empatadas.",
+                 text:"Duas forças se equilibram em eterna dança de opostos. Um universo dual, tenso e belo. ☯️"},
+    equilibrio: {badge:"🌈", title:"O Universo Harmônico", kind:"win", color:"#54c07a", hint:"Espalhe as forças sem deixar nenhuma dominar demais.",
+                 text:"Nenhuma força venceu — todas convivem em equilíbrio suave. Um universo harmônico e sereno. 🌈"},
+    colapso:    {badge:"🕳️", title:"O Colapso", kind:"lose", color:"#6b7699", hint:"Junte 3 mundos sem NENHUMA força em comum entre vizinhos — puro choque.",
+                 text:"As forças colidiram sem nenhuma harmonia. A criação se dobrou sobre si mesma num buraco negro. 🕳️"},
+  };
+  const SECRET = {
+    id:0, secret:true, noRepeat:true, name:"Nível Secreto", lvl:"A Criação Final",
+    cards:SEC_CARDS, plays:3, initialEmoji:"🌫️",
+    storyStart:"Você dominou os mundos. Agora funda 3 deles, em ordem, e dê à luz um Universo.",
+    stats:[["🌍","mat"],["💗","alm"],["🎨","art"],["🧠","men"],["🌊","harmonia"]],
+    newState:sec_new, apply:sec_apply, classify:sec_classify, emoji:sec_emoji, bg:sec_bg, react:sec_react,
+    fates:SEC_FATES, fateOrder:["supremo","materia","alma","arte","mente","dualidade","equilibrio","colapso"],
+  };
+
+  const GAMES = {0:SECRET, 1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4, 5:WORLD5, 6:WORLD6, 7:WORLD7, 8:WORLD8};
 
   // ---------- WORLDS (menu tiles) ----------
   const WORLDS = [
@@ -1217,7 +1306,7 @@
   })();
 
   // ---------- SCREEN MANAGER ----------
-  function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); }
+  function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); if(id==="s-menu") refreshSecretBtn(); }
   let toastT=null;
   function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1600); }
 
@@ -1229,6 +1318,12 @@
   function wUnlocked(id){ return progress[id] || (progress[id]={}); }
   function medalCount(id){ return Object.keys(progress[id]||{}).length; }
   function totalMedals(){ let t=0; for(let i=1;i<=8;i++) t+=medalCount(i); return t; }
+  function completeWorlds(){ let n=0; for(let i=1;i<=8;i++) if(medalCount(i)>=8) n++; return n; }
+  function refreshSecretBtn(){
+    const b=$("btnSecret"); if(!b) return; const n=completeWorlds();
+    if(n>=3){ b.textContent="🌌 Nível Secreto"; b.classList.add("unlocked"); }
+    else { b.textContent=`🔒 Nível Secreto (${n}/3)`; b.classList.remove("unlocked"); }
+  }
 
   // ---------- GAME RUNTIME ----------
   const worldEl=$("world"), worldEmo=$("worldEmo"), storyEl=$("story"), statsEl=$("stats"),
@@ -1237,6 +1332,14 @@
 
   function renderHand(){
     handEl.innerHTML = G.cards.map(c=>{
+      if(G.secret){
+        const locked = medalCount(c.worldId) < 8;
+        return `<div class="card${locked?' locked-card':''}" data-el="${c.key}" style="--cc:${c.color}">
+          <div class="glow"></div>
+          <div class="emoji">${locked?'🔒':c.emoji}</div>
+          <div class="name">${locked?'?????':c.name}</div>
+          <div class="cforca">${locked?'':c.forcaIcons}</div></div>`;
+      }
       const symCls = c.sym ? " sym" : "";
       return `<div class="card" data-el="${c.key}" style="--cc:${c.color}">
         <div class="glow"></div>
@@ -1267,15 +1370,17 @@
     worldEmo.textContent=G.initialEmoji; worldEl.style.background=G.bg(state);
     setStory(G.storyStart);
     renderStats(); renderSlots();
-    [...handEl.children].forEach(c=>c.classList.remove("disabled"));
+    if(G.secret) renderHand(); else [...handEl.children].forEach(c=>c.classList.remove("disabled"));
   }
 
   function playCard(el){
     if(busy || seq.length>=G.plays) return;
     const cd=cardMap[el];
-    Audio.element(cd.fx); FX.spawn(cd.fx,false,cd.color,cd.color2); pulseRing(cd.color);
+    if(G.secret && medalCount(cd.worldId)<8) return;   // carta travada
+    Audio.element(cd.fx); FX.spawn(cd.fx,false,cd.color,cd.color2||cd.color); pulseRing(cd.color);
     const card=handEl.querySelector('.card[data-el="'+el+'"]');
     card.classList.remove("zap"); void card.offsetWidth; card.classList.add("zap");
+    if(G.noRepeat) card.classList.add("disabled");     // não pode repetir a mesma carta
     const prev=state; state=G.apply(prev, el); seq.push(el);
     setStory(G.react(prev, el));
     worldEmo.textContent=G.emoji(state,false); worldEl.style.background=G.bg(state);
@@ -1293,7 +1398,7 @@
     updateMedalUI();
     $("endHalo").style.background=fate.color;
     const b=$("endBadge"); b.textContent=fate.badge; b.classList.remove("anim"); void b.offsetWidth; b.classList.add("anim");
-    $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : (G.id===2 ? "Molécula criada" : "Final desbloqueado");
+    $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : (G.secret ? "Universo criado" : (G.id===2 ? "Molécula criada" : "Final desbloqueado"));
     $("endTitle").textContent = fate.badge+" "+fate.title;
     $("endText").textContent = fate.text;
     $("endSeq").textContent = seq.map(e=>cardMap[e].emoji).join("  ");
@@ -1301,8 +1406,9 @@
     // comemoração de progresso
     const worldDone = medalCount(G.id)>=8, allDone = totalMedals()>=64;
     const banner=$("endBanner");
-    if(isNew && allDone){ banner.textContent="🎉 GÊNESIS 100% — VOCÊ COMPLETOU TUDO!"; banner.classList.remove("hidden"); }
-    else if(isNew && worldDone){ banner.textContent="🏆 MUNDO COMPLETO! Todos os 8 finais!"; banner.classList.remove("hidden"); }
+    if(isNew && G.secret && worldDone){ banner.textContent="🌌 NÍVEL SECRETO COMPLETO! Todos os 8 universos!"; banner.classList.remove("hidden"); }
+    else if(isNew && allDone && !G.secret){ banner.textContent="🎉 GÊNESIS 100% — VOCÊ COMPLETOU TUDO!"; banner.classList.remove("hidden"); }
+    else if(isNew && worldDone && !G.secret){ banner.textContent="🏆 MUNDO COMPLETO! Todos os 8 finais!"; banner.classList.remove("hidden"); }
     else banner.classList.add("hidden");
     if(isNew && worldDone){ // confete extra
       setTimeout(()=>FX.burst("#f6c453",90),260);
@@ -1362,13 +1468,13 @@
   function enterWorld(id){
     const g=GAMES[id]; if(!g) return;
     G=g; cardMap={}; G.cards.forEach(c=>cardMap[c.key]=c);
-    $("gameTitle").innerHTML = `${G.name}<small>Mundo ${G.id}</small>`;
+    $("gameTitle").innerHTML = G.secret ? `${G.name}<small>A Criação Final</small>` : `${G.name}<small>Mundo ${G.id}</small>`;
     $("lvlName").textContent = G.lvl;
     showScreen("s-game");
     renderHand();
     setTimeout(()=>FX.resize(), 60);
     reset(); updateMedalUI();
-    maybeShowIntro();
+    if(!G.secret) maybeShowIntro();
   }
   function maybeShowIntro(){
     if(localStorage.getItem("genesis_intro")==="1") return;
@@ -1382,7 +1488,10 @@
 
   // ---------- EVENTS ----------
   $("btnJogar").onclick=()=>{ Audio.ensure(); Audio.click(); showScreen("s-worlds"); renderWorlds(); };
-  $("btnEmblemasMenu").onclick=()=>{ Audio.click(); openGallery(); };
+  $("btnSecret").onclick=()=>{ Audio.ensure(); Audio.click();
+    if(completeWorlds()>=3){ enterWorld(0); }
+    else { toast(`🔒 Complete 3 mundos para desbloquear (${completeWorlds()}/3)`); }
+  };
   $("btnShare").onclick=()=>{ Audio.click();
     const GAME_URL="https://alvarony.github.io/jogo-genesis/";
     const msg="🌍 *GÊNESIS* — crie mundos e descubra seus destinos!\n\nCada mundo tem 8 finais secretos pra desbloquear. Será que você acha todos? 🏅\n\nJoga aí: "+GAME_URL;
@@ -1412,6 +1521,7 @@
   G.cards.forEach(c=>cardMap[c.key]=c);   // cardMap padrão (galeria pelo menu)
   window.__genesis = {GAMES, showScreen};
   refreshMuteButtons();
+  refreshSecretBtn();
 })();
 </script>
 </body>
