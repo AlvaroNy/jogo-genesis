@@ -72,8 +72,11 @@
   .eggbox .sig{font-weight:800; color:var(--gold); font-size:15px; margin:12px 0 4px}
   .eggbox .whisper{font-size:12px; color:var(--muted); font-style:italic; margin-bottom:14px}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .orbit{position:absolute; inset:-14px; border-radius:50%; animation:spin 20s linear infinite}
-  .orbit span{position:absolute; top:-4px; left:50%; transform:translateX(-50%); font-size:20px}
+  .orbit{position:absolute; inset:-16px; border-radius:50%; animation:spin 20s linear infinite}
+  @keyframes spinRev{to{transform:rotate(-360deg)}}
+  .orbit .planet{position:absolute; transform:translate(-50%,-50%)}
+  .orbit .planet .pl-ico{display:inline-block; font-size:20px; animation:spinRev 20s linear infinite;
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.5))}
   .menu-btns{display:flex; flex-direction:column; gap:12px; width:100%; max-width:280px}
   .btn-primary{
     padding:16px; border-radius:16px; border:none; cursor:pointer; font-weight:800; font-size:19px;
@@ -276,7 +279,7 @@
     <div class="brand">GÊNESIS</div>
     <div class="tagline">8 mundos para criar — e descobrir seus destinos</div>
     <div class="menu-orb" id="menuOrb" title="">
-      <div class="orbit"><span>🔥</span></div>
+      <div class="orbit" id="menuOrbit"></div>
       <div class="core"></div>
       <div class="ico">🌌</div>
     </div>
@@ -1335,7 +1338,7 @@
   })();
 
   // ---------- SCREEN MANAGER ----------
-  function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); if(id==="s-menu") refreshSecretBtn(); }
+  function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); if(id==="s-menu"){ refreshSecretBtn(); renderMenuOrbit(); } }
   let toastT=null;
   function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1600); }
 
@@ -1352,6 +1355,20 @@
     const b=$("btnSecret"); if(!b) return; const n=completeWorlds();
     if(n>=3){ b.textContent="🌌 Nível Secreto"; b.classList.add("unlocked"); }
     else { b.textContent=`🔒 Nível Secreto (${n}/3)`; b.classList.remove("unlocked"); }
+  }
+  function renderMenuOrbit(){
+    const orbit=$("menuOrbit"); if(!orbit) return;
+    const done = WORLDS.filter(w=>w.playable && medalCount(w.id)>=8);
+    const R=90;
+    if(done.length===0){
+      orbit.innerHTML = `<span class="planet" style="left:50%;top:-6px"><span class="pl-ico">🔥</span></span>`;
+      return;
+    }
+    orbit.innerHTML = done.map((w,i)=>{
+      const ang = (i/done.length)*2*Math.PI - Math.PI/2;   // começa no topo
+      const x = Math.cos(ang)*R, y = Math.sin(ang)*R;
+      return `<span class="planet" style="left:calc(50% + ${x.toFixed(1)}px); top:calc(50% + ${y.toFixed(1)}px)"><span class="pl-ico">${w.emoji}</span></span>`;
+    }).join("");
   }
 
   // ---------- GAME RUNTIME ----------
@@ -1561,6 +1578,7 @@
   window.__genesis = {GAMES, showScreen};
   refreshMuteButtons();
   refreshSecretBtn();
+  renderMenuOrbit();
 })();
 </script>
 </body>
