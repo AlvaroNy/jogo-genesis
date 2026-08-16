@@ -193,17 +193,30 @@
   @keyframes tagPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
   .modal .seq{font-size:22px; letter-spacing:.15em; margin:6px 0 16px}
 
-  .gallery-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:6px 0 16px; text-align:left}
-  .gcell{background:var(--panel); border:1px solid var(--panel-b); border-radius:14px; padding:12px; display:flex; gap:10px; align-items:flex-start}
+  .gallery-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:6px 0 16px}
+  .gcell{background:var(--panel); border:1px solid var(--panel-b); border-radius:14px; padding:12px 10px;
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:5px; cursor:pointer;
+    transition:transform .1s ease, border-color .2s}
+  .gcell:hover{border-color:var(--panel-b); transform:translateY(-2px)}
+  .gcell:active{transform:scale(.96)}
   .gcell.win{border-color:rgba(246,196,83,.35)}
-  .gcell .ge{font-size:32px; line-height:1}
+  .gcell .ge{font-size:34px; line-height:1}
   .gcell.locked .ge{filter:grayscale(1) opacity(.5)}
-  .gcell .gt{font-size:14px; font-weight:800}
+  .gcell .gt{font-size:12.5px; font-weight:800}
   .gcell.locked .gt{color:var(--muted)}
-  .gcell .gh{font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.35}
-  .gcell .gseq{font-size:14px; letter-spacing:.1em; margin-top:5px; font-weight:800}
+  .gcell .tap{font-size:10px; color:var(--muted); opacity:.65; letter-spacing:.02em}
   .progress{font-size:13px; color:var(--muted); margin-bottom:10px}
   .progress b{color:var(--gold)}
+
+  /* hint box */
+  .hintbox{max-width:360px}
+  .hintbox .badge{font-size:60px; margin:2px 0 4px}
+  .hintblock{background:var(--panel); border:1px solid var(--panel-b); border-radius:14px; padding:12px 14px; margin:10px 0; text-align:left}
+  .hintblock .lab{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:800}
+  .hintblock p{font-size:14.5px; line-height:1.45; margin-top:5px; color:#dbe3ff}
+  .hintblock .seq{font-size:24px; letter-spacing:.12em; margin-top:8px}
+  .hintblock.sol{border-color:rgba(84,192,122,.4)}
+  .hintlocked{font-size:13px; color:var(--muted); margin:8px 2px 2px}
 
   .toast{position:fixed; left:50%; bottom:34px; transform:translateX(-50%) translateY(20px);
     background:#232b4d; border:1px solid var(--panel-b); color:var(--txt); padding:11px 18px; border-radius:14px;
@@ -305,6 +318,17 @@
     <div class="progress"><b id="galleryCount">0</b> de 8 destinos descobertos</div>
     <div class="gallery-grid" id="galleryGrid"></div>
     <div class="actions"><button class="btn" id="closeGallery">Voltar a jogar</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="hintOverlay" style="z-index:60">
+  <div class="modal hintbox">
+    <div class="badge" id="hintBadge">🔒</div>
+    <h2 id="hintTitle">? ? ?</h2>
+    <div class="hintblock"><span class="lab">💡 Dica</span><p id="hintText">—</p></div>
+    <div class="hintblock sol hidden" id="hintSolWrap"><span class="lab">✅ Solução</span><div class="seq" id="hintSol"></div></div>
+    <div class="hintlocked hidden" id="hintLockedNote">🔒 Descubra jogando para revelar a solução.</div>
+    <div class="actions"><button class="btn" id="hintClose">Fechar</button></div>
   </div>
 </div>
 
@@ -702,7 +726,182 @@
     fates:W4_FATES, fateOrder:["arcoiris","purpura","laranja","verde","metalico","prateado","marrom","monocromatico"],
   };
 
-  const GAMES = {1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4};
+  /* ============================================================
+     MUNDO 5 — A COMPOSIÇÃO  (Ritmo, Melodia, Harmonia, Timbre)
+  ============================================================ */
+  const W5_CARDS = [
+    {key:"ritmo",    emoji:"🥁", name:"RITMO",    color:"#ff9a3c", color2:"#ffc78a", fx:"heavy"},
+    {key:"melodia",  emoji:"🎵", name:"MELODIA",  color:"#4db8ff", color2:"#a8dcff", fx:"up"},
+    {key:"harmonia", emoji:"🎹", name:"HARMONIA", color:"#a678ff", color2:"#c9b0ff", fx:"spread"},
+    {key:"timbre",   emoji:"🎺", name:"TIMBRE",   color:"#54c07a", color2:"#9ad9b0", fx:"spread"},
+  ];
+  function w5_new(){ return {ritmo:0, melodia:0, harmonia:0, timbre:0, dissonancia:0}; }
+  function w5_apply(prev, el){
+    const s={...prev};
+    if(el==="ritmo"){ s.ritmo+=2; if(s.dissonancia>0) s.dissonancia-=1; }        // ritmo é a base, organiza
+    else if(el==="melodia"){ s.melodia+=2; if(prev.ritmo===0) s.dissonancia+=1; } // melodia sem base rítmica flutua
+    else if(el==="harmonia"){ s.harmonia+=2; if(prev.melodia===0) s.dissonancia+=1; } // harmonia sem melodia = acordes soltos
+    else if(el==="timbre"){ s.timbre+=2; }                                        // timbre só colore
+    return s;
+  }
+  function w5_classify(s){
+    if(s.dissonancia>=3) return "cacofonia";
+    if(s.ritmo>0&&s.melodia>0&&s.harmonia>0) return "sinfonia";
+    if(s.ritmo>0&&s.melodia>0&&s.harmonia===0) return "cancao";
+    if(s.ritmo>0&&s.harmonia>0&&s.melodia===0) return "jazz";
+    if(s.melodia>0&&s.harmonia>0&&s.ritmo===0) return "balada";
+    if(s.ritmo>0&&s.melodia===0&&s.harmonia===0) return "batuque";
+    if(s.timbre>0&&s.ritmo===0&&s.melodia===0&&s.harmonia===0) return "textura";
+    return "solo";
+  }
+  function w5_emoji(s, done){
+    if(!done && s.ritmo===0&&s.melodia===0&&s.harmonia===0&&s.timbre===0) return "🎼";
+    if(s.dissonancia>=3) return "🔊";
+    if(s.ritmo>0&&s.melodia>0&&s.harmonia>0) return "🎼";
+    if(s.ritmo>0&&s.melodia>0) return "🎵";
+    if(s.ritmo>0&&s.harmonia>0) return "🎷";
+    if(s.melodia>0&&s.harmonia>0) return "🎹";
+    if(s.ritmo>0) return "🥁";
+    if(s.melodia>0||s.harmonia>0) return "🎤";
+    if(s.timbre>0) return "🎺";
+    return "🎼";
+  }
+  function w5_bg(s){
+    if(s.dissonancia>=3) return "radial-gradient(circle at 40% 30%,#ff5a4a,#2a0a06 70%)";
+    if(s.ritmo>0&&s.melodia>0&&s.harmonia>0) return "radial-gradient(circle at 35% 30%,#ffd76b,#2a2410 70%)";
+    if(s.ritmo>0&&s.melodia>0) return "radial-gradient(circle at 35% 30%,#4db8ff,#082138 70%)";
+    if(s.melodia>0&&s.harmonia>0) return "radial-gradient(circle at 35% 30%,#a678ff,#160e2a 70%)";
+    if(s.ritmo>0&&s.harmonia>0) return "radial-gradient(circle at 35% 30%,#2f9f8f,#0a2320 70%)";
+    if(s.ritmo>0) return "radial-gradient(circle at 35% 30%,#ff9a3c,#2a1602 70%)";
+    if(s.timbre>0) return "radial-gradient(circle at 35% 30%,#54c07a,#0c2a17 70%)";
+    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
+  }
+  function w5_react(prev, el){
+    if(el==="ritmo"){ if(prev.dissonancia>0) return "🥁 A batida entra e organiza o caos numa pulsação firme.";
+      return "🥁 Um ritmo pulsa — a base de tudo se firma."; }
+    if(el==="melodia"){ if(prev.ritmo>0) return "🎵 Uma melodia dança leve sobre o ritmo.";
+      return "🎵 Uma melodia flutua no ar, sem um chão que a sustente."; }
+    if(el==="harmonia"){ if(prev.melodia>0) return "🎹 Acordes envolvem a melodia — tudo ganha profundidade.";
+      return "🎹 Acordes soam soltos, buscando uma melodia que não veio."; }
+    if(el==="timbre"){ return "🎺 Um timbre marcante colore o som com sua cor própria."; }
+    return "";
+  }
+  const W5_FATES = {
+    sinfonia: {badge:"🎼", title:"A Sinfonia", kind:"win", color:"#ffd76b", hint:"Ritmo, melodia e harmonia — os três juntos, com o ritmo firmando a base primeiro.",
+               text:"Ritmo, melodia e harmonia se encontram em perfeito equilíbrio. Uma sinfonia grandiosa ecoa. 🎼"},
+    cancao:   {badge:"🎵", title:"A Canção", kind:"win", color:"#4db8ff", hint:"Ritmo e melodia, sem harmonia.",
+               text:"Ritmo e melodia se abraçam numa canção que gruda no ouvido. 🎵"},
+    jazz:     {badge:"🎷", title:"O Jazz", kind:"win", color:"#2f9f8f", hint:"Ritmo e harmonia, sem uma melodia principal.",
+               text:"Ritmo e harmonia grooveiam juntos, livres e sofisticados. É jazz. 🎷"},
+    balada:   {badge:"🎹", title:"A Balada", kind:"win", color:"#a678ff", hint:"Melodia e harmonia, sem ritmo marcado.",
+               text:"Melodia e harmonia se derramam numa balada suave e emotiva. 🎹"},
+    batuque:  {badge:"🥁", title:"O Batuque", kind:"win", color:"#ff9a3c", hint:"Só ritmo, ritmo e mais ritmo.",
+               text:"Só percussão, pura e hipnótica. O batuque toma conta do corpo. 🥁"},
+    solo:     {badge:"🎤", title:"O Solo", kind:"win", color:"#7ad0ff", hint:"Uma melodia (ou harmonia) sozinha, colorida por um timbre — mas sem ritmo.",
+               text:"Uma única voz, colorida por seu timbre, canta sozinha. Um solo tocante. 🎤"},
+    cacofonia:{badge:"🔊", title:"A Cacofonia", kind:"lose", color:"#ff4d4d", hint:"Empilhe melodia e harmonia sem nenhum ritmo pra sustentar — tudo desaba.",
+               text:"Sons empilhados sem base desabam num ruído caótico. Cacofonia. 🔊"},
+    textura:  {badge:"🎺", title:"A Textura", kind:"lose", color:"#54c07a", hint:"Só timbre, sem ritmo, melodia ou harmonia — cor sonora, mas ainda não é música.",
+               text:"Só cor sonora, sem melodia nem ritmo. Uma textura interessante... mas ainda não é música. 🎺"},
+  };
+  const WORLD5 = {
+    id:5, name:"A Composição", lvl:"Nível 1 — A Partitura em Branco",
+    cards:W5_CARDS, plays:3, initialEmoji:"🎼",
+    storyStart:"Uma partitura em branco. Combine 3 elementos musicais, em ordem, e ouça a obra que nasce.",
+    stats:[["🥁","ritmo"],["🎵","melodia"],["🎹","harmonia"],["🎺","timbre"],["🔊","dissonancia"]],
+    newState:w5_new, apply:w5_apply, classify:w5_classify, emoji:w5_emoji, bg:w5_bg, react:w5_react,
+    fates:W5_FATES, fateOrder:["sinfonia","cancao","jazz","balada","batuque","solo","cacofonia","textura"],
+  };
+
+  /* ============================================================
+     MUNDO 6 — A MÚSICA  (Grave, Agudo, Ritmo, Silêncio)
+  ============================================================ */
+  const W6_CARDS = [
+    {key:"grave",    emoji:"🎸", name:"GRAVE",    color:"#6b5cff", color2:"#a89dff", fx:"down"},
+    {key:"agudo",    emoji:"🎻", name:"AGUDO",    color:"#ff6bd6", color2:"#ffb0ec", fx:"up"},
+    {key:"ritmo",    emoji:"🥁", name:"RITMO",    color:"#ff9a3c", color2:"#ffc78a", fx:"heavy"},
+    {key:"silencio", emoji:"🤫", name:"SILÊNCIO", color:"#8a93a3", color2:"#c2c8d2", fx:"spread"},
+  ];
+  function w6_new(){ return {grave:0, agudo:0, ritmo:0, silencio:0, dinamica:0}; }
+  function w6_apply(prev, el){
+    const s={...prev};
+    if(el==="grave"){ s.grave+=2; }
+    else if(el==="agudo"){ s.agudo+=2; }
+    else if(el==="ritmo"){ s.ritmo+=2; }
+    else if(el==="silencio"){ s.silencio+=2; if(prev.grave>0||prev.agudo>0||prev.ritmo>0) s.dinamica+=2; } // pausa depois do som = dinâmica
+    return s;
+  }
+  function w6_som(s){ return (s.grave>0?1:0)+(s.agudo>0?1:0)+(s.ritmo>0?1:0); }
+  function w6_classify(s){
+    if(w6_som(s)>=2 && s.dinamica>=2) return "obra";
+    if(s.grave>0&&s.agudo>0&&s.ritmo>0) return "estrondo";
+    if(s.grave>0&&s.agudo>0) return "espectro";
+    if(s.ritmo>0&&(s.grave>0||s.agudo>0)) return "groove";
+    if(s.grave>0&&s.agudo===0&&s.ritmo===0) return "grave";
+    if(s.agudo>0&&s.grave===0&&s.ritmo===0) return "agudo";
+    if(s.ritmo>0&&s.grave===0&&s.agudo===0) return "batida";
+    return "silencio";
+  }
+  function w6_emoji(s, done){
+    if(!done && s.grave===0&&s.agudo===0&&s.ritmo===0&&s.silencio===0) return "🎧";
+    if(w6_som(s)>=2 && s.dinamica>=2) return "🎶";
+    if(s.grave>0&&s.agudo>0&&s.ritmo>0) return "💥";
+    if(s.grave>0&&s.agudo>0) return "🎵";
+    if(s.ritmo>0&&(s.grave>0||s.agudo>0)) return "🎸";
+    if(s.grave>0&&s.agudo===0&&s.ritmo===0) return "🔉";
+    if(s.agudo>0&&s.grave===0&&s.ritmo===0) return "🔊";
+    if(s.ritmo>0&&s.grave===0&&s.agudo===0) return "🥁";
+    return "🤫";
+  }
+  function w6_bg(s){
+    if(s.grave>0&&s.agudo>0&&s.ritmo>0&&s.dinamica<2) return "radial-gradient(circle at 40% 30%,#ff5a4a,#2a0a06 70%)";
+    if(w6_som(s)>=2 && s.dinamica>=2) return "radial-gradient(circle at 35% 30%,#ffd76b,#2a2410 70%)";
+    if(s.grave>0&&s.agudo>0) return "radial-gradient(circle at 35% 30%,#c06bff,#1a0e2a 70%)";
+    if(s.ritmo>0&&(s.grave>0||s.agudo>0)) return "radial-gradient(circle at 35% 30%,#ff7a4d,#2a1006 70%)";
+    if(s.grave>0) return "radial-gradient(circle at 35% 30%,#6b5cff,#0e0d24 70%)";
+    if(s.agudo>0) return "radial-gradient(circle at 35% 30%,#ff6bd6,#2a0a22 70%)";
+    if(s.ritmo>0) return "radial-gradient(circle at 35% 30%,#ff9a3c,#2a1602 70%)";
+    if(s.silencio>0) return "radial-gradient(circle at 35% 30%,#3a3f52,#0c0e16 70%)";
+    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
+  }
+  function w6_react(prev, el){
+    if(el==="grave"){ if(prev.agudo>0) return "🎸 O grave encontra o agudo — o espectro sonoro se completa.";
+      return "🎸 Um grave profundo faz o chão vibrar."; }
+    if(el==="agudo"){ if(prev.grave>0) return "🎻 O agudo cintila sobre o grave — som cheio, de ponta a ponta.";
+      return "🎻 Um agudo brilhante rasga o ar."; }
+    if(el==="ritmo"){ return "🥁 Uma batida marca o tempo, firme."; }
+    if(el==="silencio"){ if(prev.grave>0||prev.agudo>0||prev.ritmo>0) return "🤫 Um silêncio súbito — a pausa dá dramaticidade ao som.";
+      return "🤫 Silêncio. Só o vazio ecoa."; }
+    return "";
+  }
+  const W6_FATES = {
+    obra:     {badge:"🎶", title:"A Obra-Prima", kind:"win", color:"#ffd76b", hint:"Toque dois ou mais sons e então deixe um silêncio no fim — a pausa dá vida à obra.",
+               text:"Sons ricos pontuados por silêncios no momento certo. A dinâmica dá vida à obra-prima. 🎶"},
+    espectro: {badge:"🎵", title:"O Espectro", kind:"win", color:"#c06bff", hint:"Grave e agudo juntos, sem ritmo — o som cheio, de ponta a ponta.",
+               text:"Do grave mais fundo ao agudo mais alto — o espectro sonoro inteiro preenche o ar. 🎵"},
+    groove:   {badge:"🎸", title:"O Groove", kind:"win", color:"#ff7a4d", hint:"Uma batida com um grave (ou um agudo) por cima — mas não os dois juntos.",
+               text:"Ritmo e um tom marcante se encaixam num groove gostoso que faz o corpo balançar. 🎸"},
+    grave:    {badge:"🔉", title:"O Grave Profundo", kind:"win", color:"#6b5cff", hint:"Só grave, fundo e pesado.",
+               text:"Um grave profundo e pesado faz tudo vibrar. Puro e imponente. 🔉"},
+    agudo:    {badge:"🔊", title:"O Agudo", kind:"win", color:"#ff6bd6", hint:"Só agudo, alto e brilhante.",
+               text:"Um agudo alto e cintilante corta o ar, afiado e reluzente. 🔊"},
+    batida:   {badge:"🥁", title:"A Batida", kind:"win", color:"#ff9a3c", hint:"Só ritmo, sem mais nada.",
+               text:"Só a batida, seca e hipnótica, marcando o tempo sem parar. 🥁"},
+    estrondo: {badge:"💥", title:"O Estrondo", kind:"lose", color:"#ff4d4d", hint:"Grave, agudo e ritmo todos juntos, sem nenhum silêncio — vira muralha de ruído.",
+               text:"Grave, agudo e ritmo empilhados sem uma pausa sequer — uma muralha de ruído ensurdecedor. 💥"},
+    silencio: {badge:"🤫", title:"O Silêncio", kind:"lose", color:"#8a93a3", hint:"Só silêncio, do início ao fim.",
+               text:"Nenhum som chegou a soar. Só o silêncio, vasto e vazio, permanece. 🤫"},
+  };
+  const WORLD6 = {
+    id:6, name:"A Música", lvl:"Nível 1 — O Vazio Sonoro",
+    cards:W6_CARDS, plays:3, initialEmoji:"🎧",
+    storyStart:"Fones nos ouvidos, tudo em silêncio. Combine 3 sons, na ordem certa, e ouça o que nasce.",
+    stats:[["🎸","grave"],["🎻","agudo"],["🥁","ritmo"],["🤫","silencio"],["✨","dinamica"]],
+    newState:w6_new, apply:w6_apply, classify:w6_classify, emoji:w6_emoji, bg:w6_bg, react:w6_react,
+    fates:W6_FATES, fateOrder:["obra","espectro","groove","grave","agudo","batida","estrondo","silencio"],
+  };
+
+  const GAMES = {1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4, 5:WORLD5, 6:WORLD6};
 
   // ---------- WORLDS (menu tiles) ----------
   const WORLDS = [
@@ -710,8 +909,8 @@
     {id:2, name:"Química da Vida", emoji:"🧪", tag:"4 átomos · 8 moléculas", playable:true},
     {id:3, name:"O Coração", emoji:"❤️", tag:"4 emoções · 8 destinos", playable:true},
     {id:4, name:"As Cores", emoji:"🎨", tag:"4 cores · 8 obras", playable:true},
-    {id:5, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
-    {id:6, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:5, name:"A Composição", emoji:"🎼", tag:"4 elementos · 8 obras", playable:true},
+    {id:6, name:"A Música", emoji:"🎧", tag:"4 sons · 8 destinos", playable:true},
     {id:7, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
     {id:8, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
   ];
@@ -879,13 +1078,29 @@
     const u=progress[G.id]||{};
     $("galleryGrid").innerHTML = G.fateOrder.map(id=>{
       const f=G.fates[id], got=u[id];
-      if(got){ const s=got.seq.map(e=>cardMap[e].emoji).join("  ");
-        return `<div class="gcell ${f.kind}"><div class="ge">${f.badge}</div>
-          <div><div class="gt">${f.title}</div><div class="gseq">${s}</div></div></div>`; }
-      return `<div class="gcell locked"><div class="ge">🔒</div>
-        <div><div class="gt">? ? ?</div><div class="gh">${f.hint}</div></div></div>`;
+      return `<div class="gcell ${got?f.kind:'locked'}" data-fate="${id}">
+        <div class="ge">${got?f.badge:'🔒'}</div>
+        <div class="gt">${got?f.title:'? ? ?'}</div>
+        <div class="tap">toque para a dica</div></div>`;
     }).join("");
     $("galleryOverlay").classList.add("show");
+  }
+  function openHint(fateId){
+    const f=G.fates[fateId]; if(!f) return;
+    Audio.click();
+    const got=(progress[G.id]||{})[fateId];
+    $("hintBadge").textContent = got ? f.badge : "🔒";
+    $("hintTitle").textContent = got ? f.title : "? ? ?";
+    $("hintText").textContent = f.hint;
+    if(got){
+      $("hintSol").textContent = got.seq.map(e=>cardMap[e].emoji).join("  ");
+      $("hintSolWrap").classList.remove("hidden");
+      $("hintLockedNote").classList.add("hidden");
+    } else {
+      $("hintSolWrap").classList.add("hidden");
+      $("hintLockedNote").classList.remove("hidden");
+    }
+    $("hintOverlay").classList.add("show");
   }
 
   // ---------- WORLD SELECT ----------
@@ -941,9 +1156,13 @@
   $("playAgain").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); reset(); };
   $("toGallery").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); openGallery(); };
   $("closeGallery").onclick=()=>{ Audio.click(); $("galleryOverlay").classList.remove("show"); };
+  $("galleryGrid").addEventListener("click", e=>{ const c=e.target.closest(".gcell"); if(c) openHint(c.dataset.fate); });
+  $("hintClose").onclick=()=>{ Audio.click(); $("hintOverlay").classList.remove("show"); };
+  $("hintOverlay").addEventListener("click", e=>{ if(e.target.id==="hintOverlay") $("hintOverlay").classList.remove("show"); });
   document.querySelectorAll(".muteBtn").forEach(btn=>{ btn.onclick=()=>{ const m=Audio.toggle(); if(!m){ Audio.ensure(); Audio.click(); } refreshMuteButtons(); }; });
 
-  window.__genesis = {GAMES, WORLD1, WORLD2, showScreen};
+  G.cards.forEach(c=>cardMap[c.key]=c);   // cardMap padrão (galeria pelo menu)
+  window.__genesis = {GAMES, showScreen};
   refreshMuteButtons();
 })();
 </script>
