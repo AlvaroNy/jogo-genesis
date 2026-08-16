@@ -901,7 +901,99 @@
     fates:W6_FATES, fateOrder:["obra","espectro","groove","grave","agudo","batida","estrondo","silencio"],
   };
 
-  const GAMES = {1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4, 5:WORLD5, 6:WORLD6};
+  /* ============================================================
+     MUNDO 7 — OS SABORES  (Doce, Salgado, Azedo, Amargo)
+  ============================================================ */
+  const W7_CARDS = [
+    {key:"doce",    emoji:"🍬", name:"DOCE",    color:"#ff8fc7", color2:"#ffc0e0", fx:"spread"},
+    {key:"salgado", emoji:"🧂", name:"SALGADO", color:"#9fb0c8", color2:"#cdd8e6", fx:"heavy"},
+    {key:"azedo",   emoji:"🍋", name:"AZEDO",   color:"#d8e043", color2:"#eef08a", fx:"up"},
+    {key:"amargo",  emoji:"☕", name:"AMARGO",  color:"#a06a44", color2:"#c99a72", fx:"down"},
+  ];
+  function w7_new(){ return {doce:0, salgado:0, azedo:0, amargo:0, enjoo:0}; }
+  function w7_apply(prev, el){
+    const s={...prev};
+    if(el==="doce"){ s.doce+=2; if(prev.azedo>0||prev.amargo>0){ s.enjoo=Math.max(0,s.enjoo-2); } } // doce DEPOIS de azedo/amargo salva
+    else if(el==="salgado"){ s.salgado+=2; }                                                          // sal realça (neutro-bom)
+    else if(el==="azedo"){ s.azedo+=2; if(prev.amargo>0) s.enjoo+=2; }                                 // azedo sobre amargo = choque
+    else if(el==="amargo"){ s.amargo+=2; if(prev.azedo>0) s.enjoo+=2; }                                // amargo sobre azedo = choque
+    return s;
+  }
+  function w7_dist(s){ return (s.doce>0?1:0)+(s.salgado>0?1:0)+(s.azedo>0?1:0)+(s.amargo>0?1:0); }
+  function w7_classify(s){
+    if(s.enjoo>=2) return "enjoo";
+    if(w7_dist(s)>=3) return "banquete";
+    if(s.doce>0&&s.azedo>0) return "agridoce";
+    if(s.doce>0&&s.amargo>0) return "amargodoce";
+    if(s.doce>0) return "doce";
+    if(s.azedo>0) return "azedo";
+    if(s.amargo>0) return "amargo";
+    return "salgado";
+  }
+  function w7_emoji(s, done){
+    if(!done && s.doce===0&&s.salgado===0&&s.azedo===0&&s.amargo===0) return "🍽️";
+    if(s.enjoo>=2) return "🤢";
+    if(w7_dist(s)>=3) return "🥘";
+    if(s.doce>0&&s.azedo>0) return "🍯";
+    if(s.doce>0&&s.amargo>0) return "🍫";
+    if(s.doce>0) return "🍬";
+    if(s.azedo>0) return "🍋";
+    if(s.amargo>0) return "☕";
+    if(s.salgado>0) return "🧂";
+    return "🍽️";
+  }
+  function w7_bg(s){
+    if(s.enjoo>=2) return "radial-gradient(circle at 40% 30%,#8fae3a,#1a2408 70%)";
+    if(w7_dist(s)>=3) return "radial-gradient(circle at 35% 30%,#ffb14d,#2a1808 70%)";
+    if(s.doce>0&&s.azedo>0) return "radial-gradient(circle at 35% 30%,#ffcf5a,#2a2208 70%)";
+    if(s.doce>0&&s.amargo>0) return "radial-gradient(circle at 35% 30%,#b9794f,#241206 70%)";
+    if(s.doce>0) return "radial-gradient(circle at 35% 30%,#ff8fc7,#2a0e1e 70%)";
+    if(s.azedo>0) return "radial-gradient(circle at 35% 30%,#d8e043,#242808 70%)";
+    if(s.amargo>0) return "radial-gradient(circle at 35% 30%,#a06a44,#1e1006 70%)";
+    if(s.salgado>0) return "radial-gradient(circle at 35% 30%,#9fb0c8,#141a26 70%)";
+    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
+  }
+  function w7_react(prev, el){
+    if(el==="doce"){ if(prev.azedo>0||prev.amargo>0) return "🍬 O doce entra e suaviza a aspereza — o equilíbrio se restaura.";
+      return "🍬 Uma doçura açucarada se espalha pelo paladar."; }
+    if(el==="salgado"){ if(prev.doce>0) return "🧂 Uma pitada de sal realça e aprofunda o doce.";
+      return "🧂 O sal tempera e desperta os sabores."; }
+    if(el==="azedo"){ if(prev.amargo>0) return "🍋 O azedo bate de frente com o amargo — que combinação áspera.";
+      if(prev.doce>0) return "🍋 O azedo corta o doce num agridoce delicioso.";
+      return "🍋 Uma acidez cítrica faz a boca salivar."; }
+    if(el==="amargo"){ if(prev.azedo>0) return "☕ O amargo se choca com o azedo — áspero demais.";
+      if(prev.doce>0) return "☕ O amargo encontra o doce num contraste elegante.";
+      return "☕ Um amargor intenso e profundo toma conta."; }
+    return "";
+  }
+  const W7_FATES = {
+    banquete:  {badge:"🥘", title:"O Banquete", kind:"win", color:"#ffb14d", hint:"Três sabores diferentes que se harmonizem — e se azedo e amargo se cruzarem, feche com doce pra salvar.",
+                text:"Sabores diferentes dançam em perfeito equilíbrio no paladar. Um banquete digno de um chef! 🥘"},
+    agridoce:  {badge:"🍯", title:"Agridoce", kind:"win", color:"#ffcf5a", hint:"Doce e azedo, só os dois — o clássico agridoce.",
+                text:"Doce e azedo se equilibram naquele agridoce viciante. Simplesmente delicioso. 🍯"},
+    amargodoce:{badge:"🍫", title:"Amargo-Doce", kind:"win", color:"#b9794f", hint:"Doce e amargo juntos — como um bom chocolate meio-amargo.",
+                text:"Doce e amargo se abraçam num contraste elegante, como um chocolate meio-amargo. 🍫"},
+    doce:      {badge:"🍬", title:"Doce", kind:"win", color:"#ff8fc7", hint:"Só doçura (o sal pode entrar, mas nada de azedo ou amargo).",
+                text:"Pura doçura, açucarada e reconfortante. Às vezes o simples é o melhor. 🍬"},
+    azedo:     {badge:"🍋", title:"Azedo", kind:"win", color:"#d8e043", hint:"Só acidez, sem doce nem amargo.",
+                text:"Uma acidez viva e cítrica que faz a boca salivar. Refrescante e marcante. 🍋"},
+    amargo:    {badge:"☕", title:"Amargo", kind:"win", color:"#a06a44", hint:"Só amargor, sem doce nem azedo.",
+                text:"Um amargor profundo e intenso, sofisticado como um bom café puro. ☕"},
+    salgado:   {badge:"🧂", title:"Salgado", kind:"win", color:"#9fb0c8", hint:"Só sal, puro e simples.",
+                text:"Só sal, direto e sem rodeios. Simples, mas às vezes é tudo que a gente quer. 🧂"},
+    enjoo:     {badge:"🤢", title:"O Enjôo", kind:"lose", color:"#8fae3a", hint:"Cruze azedo com amargo sem um doce no fim pra salvar — vira enjoativo.",
+                text:"Azedo e amargo se chocaram sem nada pra harmonizar. O resultado embrulha o estômago. 🤢"},
+  };
+  const WORLD7 = {
+    id:7, name:"Os Sabores", lvl:"Nível 1 — O Prato Vazio",
+    cards:W7_CARDS, plays:3, initialEmoji:"🍽️",
+    storyStart:"Um prato vazio na mesa. Combine 3 sabores, na ordem certa, e descubra que experiência nasce no paladar.",
+    stats:[["🍬","doce"],["🧂","salgado"],["🍋","azedo"],["☕","amargo"],["🤢","enjoo"]],
+    newState:w7_new, apply:w7_apply, classify:w7_classify, emoji:w7_emoji, bg:w7_bg, react:w7_react,
+    fates:W7_FATES, fateOrder:["banquete","agridoce","amargodoce","doce","azedo","amargo","salgado","enjoo"],
+  };
+
+  const GAMES = {1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4, 5:WORLD5, 6:WORLD6, 7:WORLD7};
 
   // ---------- WORLDS (menu tiles) ----------
   const WORLDS = [
@@ -911,7 +1003,7 @@
     {id:4, name:"As Cores", emoji:"🎨", tag:"4 cores · 8 obras", playable:true},
     {id:5, name:"A Composição", emoji:"🎼", tag:"4 elementos · 8 obras", playable:true},
     {id:6, name:"A Música", emoji:"🎧", tag:"4 sons · 8 destinos", playable:true},
-    {id:7, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:7, name:"Os Sabores", emoji:"🍬", tag:"4 sabores · 8 pratos", playable:true},
     {id:8, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
   ];
 
