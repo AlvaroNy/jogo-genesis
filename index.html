@@ -9,7 +9,6 @@
   :root{
     --bg1:#0b1020; --bg2:#141a33; --panel:rgba(255,255,255,.06); --panel-b:rgba(255,255,255,.12);
     --txt:#eaf0ff; --muted:#9aa6cc; --gold:#f6c453;
-    --fogo:#ff6a3d; --agua:#3d9bff; --terra:#b98d54; --ar:#c8d6f5;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
   html,body{height:100%}
@@ -21,7 +20,6 @@
   }
   .wrap{width:100%; max-width:520px; position:relative; z-index:1}
 
-  /* ---------- SCREENS ---------- */
   .screen{display:none}
   .screen.active{display:block; animation:screenIn .38s ease}
   @keyframes screenIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
@@ -40,7 +38,7 @@
   .backbtn{padding:9px 14px; display:flex; align-items:center; gap:6px}
   .iconbtn:active,.medals-btn:active,.backbtn:active{transform:translateY(1px)}
 
-  /* ---------- MENU ---------- */
+  /* MENU */
   .menu{min-height:78vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:6px; padding:10px 0}
   .brand{font-size:52px; font-weight:900; letter-spacing:.06em;
     background:linear-gradient(180deg,#fff,#a9b6e6); -webkit-background-clip:text; background-clip:text; color:transparent;
@@ -81,7 +79,7 @@
   .btn-whats:active{transform:translateY(2px)}
   .menu-foot{margin-top:20px; font-size:12px; color:#6b7699}
 
-  /* ---------- WORLD SELECT ---------- */
+  /* WORLD SELECT */
   .worlds-head{text-align:center; margin:4px 0 16px}
   .worlds-head h2{font-size:22px; font-weight:800}
   .worlds-head p{font-size:13px; color:var(--muted); margin-top:3px}
@@ -103,7 +101,7 @@
   .wtile.shake{animation:shake .4s ease}
   .wtile .prog{position:absolute; top:8px; right:10px; font-size:11px; font-weight:800; color:var(--gold)}
 
-  /* ---------- GAME (world 1) ---------- */
+  /* GAME */
   .scene{
     background:linear-gradient(180deg,var(--bg2),rgba(20,26,51,.4));
     border:1px solid var(--panel-b); border-radius:20px; padding:16px; text-align:center;
@@ -155,16 +153,13 @@
     background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
     cursor:pointer; text-align:center; transition:transform .1s ease, box-shadow .2s ease, border-color .2s; overflow:hidden;
   }
-  .card:hover{transform:translateY(-4px)}
+  .card:hover{transform:translateY(-4px); border-color:var(--cc,var(--panel-b))}
   .card:active{transform:translateY(-1px) scale(.97)}
   .card .emoji{font-size:34px; line-height:1; position:relative; z-index:2}
-  .card .name{font-size:12px; font-weight:700; margin-top:6px; letter-spacing:.03em; position:relative; z-index:2}
+  .card .emoji.sym{font-weight:900; color:var(--cc); text-shadow:0 2px 10px rgba(0,0,0,.4)}
+  .card .name{font-size:11.5px; font-weight:700; margin-top:6px; letter-spacing:.02em; position:relative; z-index:2}
   .card .glow{position:absolute; left:50%; bottom:-30%; width:120%; height:70%; transform:translateX(-50%);
-    border-radius:50%; opacity:.55; filter:blur(14px)}
-  .card[data-el="fogo"] .glow{background:var(--fogo)} .card[data-el="fogo"]:hover{border-color:var(--fogo)}
-  .card[data-el="agua"] .glow{background:var(--agua)} .card[data-el="agua"]:hover{border-color:var(--agua)}
-  .card[data-el="terra"] .glow{background:var(--terra)} .card[data-el="terra"]:hover{border-color:var(--terra)}
-  .card[data-el="ar"] .glow{background:var(--ar)} .card[data-el="ar"]:hover{border-color:var(--ar)}
+    border-radius:50%; opacity:.55; filter:blur(14px); background:var(--cc,#888)}
   .card.disabled{opacity:.4; pointer-events:none}
   @keyframes cardZap{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}100%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
   .card.zap{animation:cardZap .4s ease-out}
@@ -194,9 +189,8 @@
   .modal .kind{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px}
   .modal p{font-size:15px; line-height:1.5; color:#dbe3ff; margin-bottom:8px}
   .modal .newtag{display:inline-block; background:var(--gold); color:#231a02; font-weight:800;
-    font-size:12px; padding:4px 10px; border-radius:20px; margin:6px 0 12px; letter-spacing:.05em}
+    font-size:12px; padding:4px 10px; border-radius:20px; margin:6px 0 12px; letter-spacing:.05em; animation:tagPulse 1.1s ease-in-out infinite}
   @keyframes tagPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-  .modal .newtag{animation:tagPulse 1.1s ease-in-out infinite}
   .modal .seq{font-size:22px; letter-spacing:.15em; margin:6px 0 16px}
 
   .gallery-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:6px 0 16px; text-align:left}
@@ -207,11 +201,10 @@
   .gcell .gt{font-size:14px; font-weight:800}
   .gcell.locked .gt{color:var(--muted)}
   .gcell .gh{font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.35}
-  .gcell .gseq{font-size:13px; letter-spacing:.12em; margin-top:5px}
+  .gcell .gseq{font-size:14px; letter-spacing:.1em; margin-top:5px; font-weight:800}
   .progress{font-size:13px; color:var(--muted); margin-bottom:10px}
   .progress b{color:var(--gold)}
 
-  /* toast */
   .toast{position:fixed; left:50%; bottom:34px; transform:translateX(-50%) translateY(20px);
     background:#232b4d; border:1px solid var(--panel-b); color:var(--txt); padding:11px 18px; border-radius:14px;
     font-weight:700; font-size:14px; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:80}
@@ -220,7 +213,7 @@
 </head>
 <body>
 
-<!-- ============ MENU ============ -->
+<!-- MENU -->
 <div class="wrap screen active" id="s-menu">
   <div class="menu">
     <div class="brand">GÊNESIS</div>
@@ -241,17 +234,15 @@
         Compartilhar no WhatsApp
       </button>
     </div>
-    <div class="menu-foot">v2 · feito com ♥</div>
+    <div class="menu-foot">v3 · feito com ♥</div>
   </div>
 </div>
 
-<!-- ============ WORLD SELECT ============ -->
+<!-- WORLD SELECT -->
 <div class="wrap screen" id="s-worlds">
   <div class="topbar">
     <button class="backbtn" id="backToMenu">← Menu</button>
-    <div class="topbtns">
-      <button class="iconbtn muteBtn" id="muteWorlds">🔊</button>
-    </div>
+    <div class="topbtns"><button class="iconbtn muteBtn" id="muteWorlds">🔊</button></div>
   </div>
   <div class="worlds-head">
     <h2>Escolha um mundo</h2>
@@ -260,11 +251,11 @@
   <div class="worlds-grid" id="worldsGrid"></div>
 </div>
 
-<!-- ============ GAME (Mundo 1: Os Elementos) ============ -->
+<!-- GAME -->
 <div class="wrap screen" id="s-game">
   <div class="topbar">
     <button class="backbtn" id="backToWorlds">← Mundos</button>
-    <div class="title" style="text-align:center; flex:1">Os Elementos<small>Mundo 1</small></div>
+    <div class="title" id="gameTitle" style="text-align:center; flex:1">—<small>Mundo</small></div>
     <div class="topbtns">
       <button class="iconbtn muteBtn" id="muteGame">🔊</button>
       <button class="medals-btn" id="openGallery">🏅 <b id="medalCount">0</b>/8</button>
@@ -273,25 +264,17 @@
 
   <div class="scene">
     <canvas id="fx"></canvas>
-    <div class="lvl" id="lvlName">Nível 1 — O Mundo Vazio</div>
+    <div class="lvl" id="lvlName">—</div>
     <div class="world-slot">
       <div class="ring" id="ring"></div>
       <div class="world" id="world"><div class="shine"></div><span class="emo" id="worldEmo">🌑</span></div>
     </div>
-    <div class="story in" id="story">Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.</div>
+    <div class="story in" id="story">—</div>
     <div class="stats" id="stats"></div>
   </div>
 
-  <div class="slots" id="slots">
-    <div class="slot">1</div><div class="slot">2</div><div class="slot">3</div>
-  </div>
-
-  <div class="hand" id="hand">
-    <div class="card" data-el="fogo"><div class="glow"></div><div class="emoji">🔥</div><div class="name">FOGO</div></div>
-    <div class="card" data-el="agua"><div class="glow"></div><div class="emoji">💧</div><div class="name">ÁGUA</div></div>
-    <div class="card" data-el="terra"><div class="glow"></div><div class="emoji">🌍</div><div class="name">TERRA</div></div>
-    <div class="card" data-el="ar"><div class="glow"></div><div class="emoji">💨</div><div class="name">AR</div></div>
-  </div>
+  <div class="slots" id="slots"></div>
+  <div class="hand" id="hand"></div>
 
   <div class="actions">
     <button class="btn ghost" id="resetBtn">↺ Recomeçar</button>
@@ -304,12 +287,12 @@
     <div class="halo" id="endHalo"></div>
     <div class="badge anim" id="endBadge">🌳</div>
     <div class="kind" id="endKind">Final desbloqueado</div>
-    <h2 id="endTitle">Mundo Vivo</h2>
+    <h2 id="endTitle">—</h2>
     <div class="newtag hidden" id="newTag">✦ NOVO EMBLEMA ✦</div>
     <p id="endText">...</p>
-    <div class="seq" id="endSeq">🔥 💧 🌍</div>
+    <div class="seq" id="endSeq"></div>
     <div class="actions">
-      <button class="btn" id="playAgain">Criar outro mundo</button>
+      <button class="btn" id="playAgain">Jogar de novo</button>
       <button class="btn ghost" id="toGallery">🏅 Emblemas</button>
     </div>
   </div>
@@ -317,13 +300,11 @@
 
 <div class="overlay" id="galleryOverlay">
   <div class="modal">
-    <div class="kind">Coleção de destinos · Os Elementos</div>
+    <div class="kind" id="galleryTitle">Coleção de destinos</div>
     <h2 style="margin-bottom:8px">Emblemas</h2>
     <div class="progress"><b id="galleryCount">0</b> de 8 destinos descobertos</div>
     <div class="gallery-grid" id="galleryGrid"></div>
-    <div class="actions">
-      <button class="btn" id="closeGallery">Voltar a criar</button>
-    </div>
+    <div class="actions"><button class="btn" id="closeGallery">Voltar a jogar</button></div>
   </div>
 </div>
 
@@ -334,10 +315,197 @@
   "use strict";
   const $ = id=>document.getElementById(id);
 
-  // ---------- WORLDS ----------
+  /* ============================================================
+     MUNDO 1 — OS ELEMENTOS
+  ============================================================ */
+  const W1_CARDS = [
+    {key:"fogo",  emoji:"🔥", name:"FOGO",  color:"#ff6a3d", color2:"#ffc24d", fx:"up"},
+    {key:"agua",  emoji:"💧", name:"ÁGUA",  color:"#3d9bff", color2:"#9fe0ff", fx:"down"},
+    {key:"terra", emoji:"🌍", name:"TERRA", color:"#b98d54", color2:"#e6c48a", fx:"heavy"},
+    {key:"ar",    emoji:"💨", name:"AR",    color:"#c8d6f5", color2:"#ffffff", fx:"spread"},
+  ];
+  function w1_new(){ return {heat:0, water:0, land:0, life:0, chaos:0}; }
+  function w1_apply(prev, el){
+    const s={...prev};
+    if(el==="fogo"){ s.heat+=2; if(prev.water>0){s.water-=2;s.chaos+=2;} if(prev.life>0){s.life-=1;s.chaos+=1;} }
+    else if(el==="agua"){ s.water+=2; s.heat-=1; if(prev.heat>=2){s.chaos+=2;} if(prev.land>0&&s.life<3){s.life+=1;} }
+    else if(el==="terra"){ s.land+=2; if(s.chaos>0)s.chaos-=1; if(prev.water>=2&&s.life<3){s.life+=1;} }
+    else if(el==="ar"){ s.chaos+=1; if(prev.heat>=2){s.heat+=1;s.chaos+=1;} if(prev.water>=3){s.water+=1;} if(prev.life>0&&s.life<3){s.life+=1;} }
+    return s;
+  }
+  function w1_classify(s){
+    if(s.chaos>=4) return "cataclismo";
+    if(s.life>=2) return "eden";
+    if(s.heat<=-2) return "gelo";
+    if(s.heat>=3&&s.water<=0) return "inferno";
+    if(s.land>=2&&s.heat>=1&&s.water<=0&&s.life<=0) return "deserto";
+    if(s.land>=3&&s.water<=0&&s.life<=0) return "pedra";
+    if(s.water>=3&&s.heat<=1) return "diluvio";
+    if(s.water>=2&&s.heat<=1&&s.life<=0&&s.land<=1) return "diluvio";
+    return "vazio";
+  }
+  function w1_emoji(s, done){
+    if(s.chaos>=4) return "💥";
+    if(!done&&s.heat===0&&s.water===0&&s.land===0&&s.life===0) return "🌑";
+    if(s.life>=2) return "🌳";
+    if(s.heat<=-2) return "❄️";
+    if(s.heat>=4&&s.water<=0) return "🌋";
+    if(s.water>=4&&s.heat<=1) return "🌊";
+    if(s.life===1) return "🌱";
+    if(s.land>=2&&s.heat>=2&&s.water<=0) return "🏜️";
+    if(s.land>=2) return "🏔️";
+    if(s.water>=2) return "💧";
+    if(s.heat>=2) return "🔥";
+    return "🌑";
+  }
+  function w1_bg(s){
+    if(s.chaos>=4) return "radial-gradient(circle at 40% 30%,#ff5a3c,#3a0a06 70%)";
+    if(s.life>=2) return "radial-gradient(circle at 35% 30%,#54c07a,#0c2a17 70%)";
+    if(s.heat<=-2) return "radial-gradient(circle at 35% 30%,#bfe4ff,#12314a 70%)";
+    if(s.heat>=4&&s.water<=0) return "radial-gradient(circle at 40% 30%,#ff8a3c,#3a1002 70%)";
+    if(s.water>=4) return "radial-gradient(circle at 35% 30%,#3d9bff,#07284d 70%)";
+    if(s.land>=2&&s.heat>=2) return "radial-gradient(circle at 35% 35%,#e0b874,#3a2a12 70%)";
+    if(s.land>=2) return "radial-gradient(circle at 35% 30%,#9c8256,#241a0d 70%)";
+    if(s.water>=2) return "radial-gradient(circle at 35% 30%,#4a86c9,#0c2036 70%)";
+    if(s.heat>=2) return "radial-gradient(circle at 40% 30%,#ff7a4d,#2a0d05 70%)";
+    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
+  }
+  function w1_react(prev, el){
+    if(el==="fogo"){ if(prev.water>0) return "🔥 O fogo encontra as águas — vapor escaldante ruge pelo ar.";
+      if(prev.life>0) return "🔥 As chamas devoram a vida que mal havia nascido.";
+      return "🔥 Uma faísca acende o nada. Calor se derrama pelo vazio."; }
+    if(el==="agua"){ if(prev.heat>=2) return "💧 A água toca o fogo — sibila e se ergue em névoa.";
+      if(prev.land>0) return "💧 A água banha a terra — algo verde estremece e desperta.";
+      return "💧 Águas se acumulam, frias, sobre o mundo silencioso."; }
+    if(el==="terra"){ if(prev.water>=2) return "🌍 Solo fértil emerge das águas — o berço da vida.";
+      return "🌍 Continentes se erguem, sólidos, firmes, eternos."; }
+    if(el==="ar"){ if(prev.heat>=2) return "💨 O vento atiça as brasas num incêndio faminto.";
+      if(prev.life>0) return "💨 A brisa carrega sementes por toda a extensão do mundo.";
+      if(prev.water>=3) return "💨 Ventos furiosos levantam tempestades sobre as águas.";
+      return "💨 Ventos varrem o mundo vazio, inquietos e sem rumo."; }
+    return "";
+  }
+  const W1_FATES = {
+    eden:      {badge:"🌳", title:"Mundo Vivo", kind:"win", color:"#54c07a", hint:"Prepare a terra, depois traga a água — e deixe a vida se espalhar.",
+                text:"Terra, água e ar em harmonia. Florestas cobrem o mundo e a vida floresce. Você criou um Éden."},
+    inferno:   {badge:"🔥", title:"Mundo em Chamas", kind:"win", color:"#ff6a3d", hint:"Apenas fogo, e nada que o apague.",
+                text:"Rios de lava, céus de fumaça. Sem água que as contenha, as chamas reinam para sempre."},
+    diluvio:   {badge:"💧", title:"O Grande Dilúvio", kind:"win", color:"#3d9bff", hint:"Uma faísca de calor primeiro — depois águas e mais águas para afogar o mundo.",
+                text:"As águas subiram sem parar até engolir tudo. Um oceano infinito, silencioso e profundo."},
+    gelo:      {badge:"❄️", title:"Mundo Congelado", kind:"win", color:"#bfe4ff", hint:"Só água, água e mais água — sem nenhum calor, até tudo virar gelo.",
+                text:"O calor se esvaiu e as águas viraram gelo eterno. Um mundo branco, imóvel e cristalino."},
+    deserto:   {badge:"🏜️", title:"Deserto Sem Fim", kind:"win", color:"#e6c48a", hint:"Terra e fogo, mas negue-lhe toda a água.",
+                text:"Terra firme cozida pelo sol. Sem uma gota d'água, só dunas se estendem até o horizonte."},
+    pedra:     {badge:"🗿", title:"Mundo de Pedra", kind:"win", color:"#a79b8c", hint:"Só rocha sobre rocha — sem água, sem vida.",
+                text:"Montanhas nuas e planícies de rocha. Sólido, eterno... e completamente sem vida."},
+    cataclismo:{badge:"☄️", title:"O Cataclismo", kind:"lose", color:"#ff4d4d", hint:"Force elementos demais a colidir de uma vez.",
+                text:"Fogo contra água, ordem contra caos. A tensão foi grande demais — o mundo se despedaçou."},
+    vazio:     {badge:"⚫", title:"O Vazio Permanece", kind:"lose", color:"#6b7699", hint:"Misture opostos até um anular o outro — e nada chega a tomar forma.",
+                text:"Os elementos se anularam entre si. Onde poderia surgir um mundo, restou apenas o vazio silencioso."},
+  };
+  const WORLD1 = {
+    id:1, name:"Os Elementos", lvl:"Nível 1 — O Mundo Vazio",
+    cards:W1_CARDS, plays:3, initialEmoji:"🌑",
+    storyStart:"Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.",
+    stats:[["🌡️","heat"],["💧","water"],["⛰️","land"],["🌿","life"],["⚡","chaos"]],
+    newState:w1_new, apply:w1_apply, classify:w1_classify, emoji:w1_emoji, bg:w1_bg, react:w1_react,
+    fates:W1_FATES, fateOrder:["eden","inferno","diluvio","gelo","deserto","pedra","cataclismo","vazio"],
+  };
+
+  /* ============================================================
+     MUNDO 2 — A QUÍMICA DA VIDA  (átomos C H O N)
+  ============================================================ */
+  const W2_CARDS = [
+    {key:"oxigenio",   emoji:"O", sym:true, name:"OXIGÊNIO",   color:"#ff5a6a", color2:"#ff9aa4", fx:"spread"},
+    {key:"carbono",    emoji:"C", sym:true, name:"CARBONO",    color:"#8a919e", color2:"#c2c8d2", fx:"heavy"},
+    {key:"hidrogenio", emoji:"H", sym:true, name:"HIDROGÊNIO", color:"#dbe6ff", color2:"#ffffff", fx:"up"},
+    {key:"nitrogenio", emoji:"N", sym:true, name:"NITROGÊNIO", color:"#5a86ff", color2:"#a8c0ff", fx:"spread"},
+  ];
+  function w2_new(){ return {c:0,h:0,o:0,n:0,energia:0}; }
+  function w2_apply(prev, el){
+    const s={...prev};
+    if(el==="oxigenio"){ s.o+=1; if(prev.c>0||prev.h>0) s.energia+=2; }           // oxigênio + combustível = energia
+    else if(el==="carbono"){ s.c+=1; if(s.energia>0) s.energia-=1; }               // carbono estrutura / prende energia
+    else if(el==="hidrogenio"){ s.h+=1; if(prev.o>0&&s.energia>0) s.energia-=1; }  // H+O = água estável
+    else if(el==="nitrogenio"){ s.n+=1; if(prev.energia>=2) s.energia+=2; }        // N em meio energético = instável
+    return s;
+  }
+  function w2_classify(s){
+    if(s.energia>=4) return "explosivo";
+    if(s.c>0&&s.n>0&&s.h>0) return "vida";
+    if(s.c>0&&s.n>0&&s.o>0) return "vida";
+    if(s.c>0&&s.h>0&&s.o>0&&s.n===0) return "acucar";
+    if(s.o>0&&s.h>0&&s.c===0&&s.n===0) return "agua";
+    if(s.c>0&&s.o>0&&s.h===0&&s.n===0) return "gascarbonico";
+    if(s.c>0&&s.h>0&&s.o===0&&s.n===0) return "metano";
+    if(s.n>0&&s.h>0&&s.c===0&&s.o===0) return "amonia";
+    return "inerte";
+  }
+  function w2_emoji(s, done){
+    if(s.energia>=4) return "💥";
+    if(!done&&s.c===0&&s.h===0&&s.o===0&&s.n===0) return "🧪";
+    if(s.c>0&&s.n>0&&(s.h>0||s.o>0)) return "🧬";
+    if(s.c>0&&s.h>0&&s.o>0&&s.n===0) return "🍬";
+    if(s.o>0&&s.h>0&&s.c===0&&s.n===0) return "💧";
+    if(s.c>0&&s.o>0&&s.h===0&&s.n===0) return "🫧";
+    if(s.c>0&&s.h>0&&s.o===0&&s.n===0) return "🔥";
+    if(s.n>0&&s.h>0&&s.c===0&&s.o===0) return "🧴";
+    return "⚗️";
+  }
+  function w2_bg(s){
+    if(s.energia>=4) return "radial-gradient(circle at 40% 30%,#ff5a4a,#3a0a06 70%)";
+    if(s.c>0&&s.n>0) return "radial-gradient(circle at 35% 30%,#54c07a,#0b2a1a 70%)";
+    if(s.o>0&&s.h>0&&s.c===0&&s.n===0) return "radial-gradient(circle at 35% 30%,#3d9bff,#07284d 70%)";
+    if(s.c>0&&s.h>0&&s.o===0&&s.n===0) return "radial-gradient(circle at 40% 30%,#ff9a3c,#2a1602 70%)";
+    if(s.c>0&&s.o>0) return "radial-gradient(circle at 35% 30%,#8a93a3,#191d28 70%)";
+    if(s.n>0&&s.h>0) return "radial-gradient(circle at 35% 30%,#7c9bd6,#12203a 70%)";
+    if(s.c>0||s.h>0||s.o>0||s.n>0) return "radial-gradient(circle at 35% 30%,#2f7f77,#0a2320 70%)";
+    return "radial-gradient(circle at 35% 30%,#2a3350,#0b1020 70%)";
+  }
+  function w2_react(prev, el){
+    if(el==="oxigenio"){ if(prev.c>0||prev.h>0) return "🅾️ O oxigênio reage com o que havia — a mistura libera energia.";
+      return "🅾️ Oxigênio preenche o frasco, ávido por reagir."; }
+    if(el==="carbono"){ if(prev.c>0) return "⬛ Mais carbono se liga à cadeia — a estrutura cresce.";
+      return "⬛ Um átomo de carbono: a espinha de toda química orgânica."; }
+    if(el==="hidrogenio"){ if(prev.o>0) return "⚪ O hidrogênio se liga ao oxigênio — gotas de água se formam.";
+      return "⚪ Hidrogênio, leve e inflamável, se espalha pelo frasco."; }
+    if(el==="nitrogenio"){ if(prev.energia>=2) return "🔵 O nitrogênio entra numa mistura instável — perigo!";
+      return "🔵 Nitrogênio, calmo e inerte, se acomoda."; }
+    return "";
+  }
+  const W2_FATES = {
+    vida:        {badge:"🧬", title:"A Centelha da Vida", kind:"win", color:"#54c07a", hint:"Junte carbono e nitrogênio com hidrogênio (ou oxigênio) — na ordem certa, sem deixar a energia explodir.",
+                  text:"Carbono, nitrogênio e hidrogênio se enlaçam num aminoácido. Da química fria nasce o primeiro sopro de vida. 🧬"},
+    agua:        {badge:"💧", title:"Água · H₂O", kind:"win", color:"#3d9bff", hint:"Só hidrogênio e oxigênio, nada mais.",
+                  text:"Dois hidrogênios abraçam um oxigênio. Simples e essencial: a molécula da vida — água."},
+    acucar:      {badge:"🍬", title:"Açúcar · Glicose", kind:"win", color:"#ffb3d1", hint:"Carbono, hidrogênio e oxigênio juntos — e nenhum nitrogênio.",
+                  text:"Carbono, hidrogênio e oxigênio se organizam num anel doce: glicose, o combustível da vida."},
+    gascarbonico:{badge:"🫧", title:"Gás Carbônico · CO₂", kind:"win", color:"#9aa3b3", hint:"Carbono e oxigênio, sem hidrogênio.",
+                  text:"Carbono e oxigênio se unem em CO₂ — o gás que as plantas respiram e que aquece o mundo."},
+    metano:      {badge:"🔥", title:"Metano · CH₄", kind:"win", color:"#ff9a3c", hint:"Carbono e hidrogênio, longe do oxigênio.",
+                  text:"Carbono cercado de hidrogênio: metano, o gás inflamável dos pântanos e das estrelas."},
+    amonia:      {badge:"🧴", title:"Amônia · NH₃", kind:"win", color:"#7c9bd6", hint:"Nitrogênio e hidrogênio, apenas os dois.",
+                  text:"Nitrogênio e hidrogênio formam amônia — pungente e útil, a base dos fertilizantes."},
+    explosivo:   {badge:"🧨", title:"Explosão!", kind:"lose", color:"#ff4d4d", hint:"Acumule energia (oxigênio sobre combustível) e então jogue nitrogênio — ou oxigênio demais.",
+                  text:"Energia demais e o nitrogênio instável... a mistura detona antes de virar molécula. 💥"},
+    inerte:      {badge:"💨", title:"Gás Inerte", kind:"lose", color:"#6b7699", hint:"Um só tipo de átomo não forma nada — ou combine átomos que não reagem entre si.",
+                  text:"Os átomos não encontraram parceiros. Nenhuma ligação, nenhuma molécula — só gás inerte à deriva."},
+  };
+  const WORLD2 = {
+    id:2, name:"Química da Vida", lvl:"Nível 1 — O Frasco Vazio",
+    cards:W2_CARDS, plays:3, initialEmoji:"🧪",
+    storyStart:"Um frasco vazio no laboratório. Combine 3 átomos e veja que molécula (ou explosão!) nasce.",
+    stats:[["C","c"],["H","h"],["O","o"],["N","n"],["⚡","energia"]],
+    newState:w2_new, apply:w2_apply, classify:w2_classify, emoji:w2_emoji, bg:w2_bg, react:w2_react,
+    fates:W2_FATES, fateOrder:["vida","agua","acucar","gascarbonico","metano","amonia","explosivo","inerte"],
+  };
+
+  const GAMES = {1:WORLD1, 2:WORLD2};
+
+  // ---------- WORLDS (menu tiles) ----------
   const WORLDS = [
-    {id:1, name:"Os Elementos", emoji:"🌍", tag:"4 elementos · 8 finais", playable:true},
-    {id:2, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:1, name:"Os Elementos",  emoji:"🌍", tag:"4 elementos · 8 finais", playable:true},
+    {id:2, name:"Química da Vida", emoji:"🧪", tag:"4 átomos · 8 moléculas", playable:true},
     {id:3, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
     {id:4, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
     {id:5, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
@@ -346,164 +514,30 @@
     {id:8, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
   ];
 
-  // ---------- ELEMENTS ----------
-  const EL = {
-    fogo:  {emoji:"🔥", name:"Fogo",  color:"#ff6a3d", color2:"#ffc24d"},
-    agua:  {emoji:"💧", name:"Água",  color:"#3d9bff", color2:"#9fe0ff"},
-    terra: {emoji:"🌍", name:"Terra", color:"#b98d54", color2:"#e6c48a"},
-    ar:    {emoji:"💨", name:"Ar",    color:"#c8d6f5", color2:"#ffffff"},
-  };
-
-  // ---------- GAME LOGIC (order matters!) ----------
-  function newState(){ return {heat:0, water:0, land:0, life:0, chaos:0}; }
-  function applyCard(prev, el){
-    const s = {...prev};
-    if(el==="fogo"){
-      s.heat += 2;
-      if(prev.water>0){ s.water -= 2; s.chaos += 2; }
-      if(prev.life>0){ s.life -= 1; s.chaos += 1; }
-    } else if(el==="agua"){
-      s.water += 2;
-      s.heat -= 1;
-      if(prev.heat>=2){ s.chaos += 2; }
-      if(prev.land>0 && s.life<3){ s.life += 1; }
-    } else if(el==="terra"){
-      s.land += 2;
-      if(s.chaos>0) s.chaos -= 1;
-      if(prev.water>=2 && s.life<3){ s.life += 1; }
-    } else if(el==="ar"){
-      s.chaos += 1;
-      if(prev.heat>=2){ s.heat += 1; s.chaos += 1; }
-      if(prev.water>=3){ s.water += 1; }
-      if(prev.life>0 && s.life<3){ s.life += 1; }
-    }
-    return s;
-  }
-  function simulate(seq){ let s=newState(); for(const el of seq) s=applyCard(s,el); return s; }
-  function classify(s){
-    if(s.chaos>=4) return "cataclismo";
-    if(s.life>=2) return "eden";
-    if(s.heat<=-2) return "gelo";
-    if(s.heat>=3 && s.water<=0) return "inferno";
-    if(s.land>=2 && s.heat>=1 && s.water<=0 && s.life<=0) return "deserto";
-    if(s.land>=3 && s.water<=0 && s.life<=0) return "pedra";
-    if(s.water>=3 && s.heat<=1) return "diluvio";
-    if(s.water>=2 && s.heat<=1 && s.life<=0 && s.land<=1) return "diluvio";
-    return "vazio";
-  }
-
-  // ---------- FATES ----------
-  const FATES = {
-    eden:      {emoji:"🌳", badge:"🌳", title:"Mundo Vivo", kind:"win", color:"#54c07a", hint:"Prepare a terra, depois traga a água — e deixe a vida se espalhar.",
-                text:"Terra, água e ar em harmonia. Florestas cobrem o mundo e a vida floresce. Você criou um Éden."},
-    inferno:   {emoji:"🌋", badge:"🔥", title:"Mundo em Chamas", kind:"win", color:"#ff6a3d", hint:"Apenas fogo, e nada que o apague.",
-                text:"Rios de lava, céus de fumaça. Sem água que as contenha, as chamas reinam para sempre."},
-    diluvio:   {emoji:"🌊", badge:"💧", title:"O Grande Dilúvio", kind:"win", color:"#3d9bff", hint:"Uma faísca de calor primeiro — depois águas e mais águas para afogar o mundo.",
-                text:"As águas subiram sem parar até engolir tudo. Um oceano infinito, silencioso e profundo."},
-    gelo:      {emoji:"❄️", badge:"❄️", title:"Mundo Congelado", kind:"win", color:"#bfe4ff", hint:"Só água, água e mais água — sem nenhum calor, até tudo virar gelo.",
-                text:"O calor se esvaiu e as águas viraram gelo eterno. Um mundo branco, imóvel e cristalino."},
-    deserto:   {emoji:"🏜️", badge:"🏜️", title:"Deserto Sem Fim", kind:"win", color:"#e6c48a", hint:"Terra e fogo, mas negue-lhe toda a água.",
-                text:"Terra firme cozida pelo sol. Sem uma gota d'água, só dunas se estendem até o horizonte."},
-    pedra:     {emoji:"🗿", badge:"🗿", title:"Mundo de Pedra", kind:"win", color:"#a79b8c", hint:"Só rocha sobre rocha — sem água, sem vida.",
-                text:"Montanhas nuas e planícies de rocha. Sólido, eterno... e completamente sem vida."},
-    cataclismo:{emoji:"💥", badge:"☄️", title:"O Cataclismo", kind:"lose", color:"#ff4d4d", hint:"Force elementos demais a colidir de uma vez.",
-                text:"Fogo contra água, ordem contra caos. A tensão foi grande demais — o mundo se despedaçou."},
-    vazio:     {emoji:"🕳️", badge:"⚫", title:"O Vazio Permanece", kind:"lose", color:"#6b7699", hint:"Misture opostos até um anular o outro — e nada chega a tomar forma.",
-                text:"Os elementos se anularam entre si. Onde poderia surgir um mundo, restou apenas o vazio silencioso."},
-  };
-  const FATE_ORDER = ["eden","inferno","diluvio","gelo","deserto","pedra","cataclismo","vazio"];
-
-  // ---------- WORLD VISUAL ----------
-  function worldEmoji(s, done){
-    if(s.chaos>=4) return "💥";
-    if(!done && s.heat===0 && s.water===0 && s.land===0 && s.life===0) return "🌑";
-    if(s.life>=2) return "🌳";
-    if(s.heat<=-2) return "❄️";
-    if(s.heat>=4 && s.water<=0) return "🌋";
-    if(s.water>=4 && s.heat<=1) return "🌊";
-    if(s.life===1) return "🌱";
-    if(s.land>=2 && s.heat>=2 && s.water<=0) return "🏜️";
-    if(s.land>=2) return "🏔️";
-    if(s.water>=2) return "💧";
-    if(s.heat>=2) return "🔥";
-    return "🌑";
-  }
-  function worldBg(s){
-    if(s.chaos>=4) return "radial-gradient(circle at 40% 30%,#ff5a3c,#3a0a06 70%)";
-    if(s.life>=2) return "radial-gradient(circle at 35% 30%,#54c07a,#0c2a17 70%)";
-    if(s.heat<=-2) return "radial-gradient(circle at 35% 30%,#bfe4ff,#12314a 70%)";
-    if(s.heat>=4 && s.water<=0) return "radial-gradient(circle at 40% 30%,#ff8a3c,#3a1002 70%)";
-    if(s.water>=4) return "radial-gradient(circle at 35% 30%,#3d9bff,#07284d 70%)";
-    if(s.land>=2 && s.heat>=2) return "radial-gradient(circle at 35% 35%,#e0b874,#3a2a12 70%)";
-    if(s.land>=2) return "radial-gradient(circle at 35% 30%,#9c8256,#241a0d 70%)";
-    if(s.water>=2) return "radial-gradient(circle at 35% 30%,#4a86c9,#0c2036 70%)";
-    if(s.heat>=2) return "radial-gradient(circle at 40% 30%,#ff7a4d,#2a0d05 70%)";
-    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
-  }
-
-  // ---------- NARRATIVE ----------
-  function reaction(prev, el){
-    if(el==="fogo"){
-      if(prev.water>0) return "🔥 O fogo encontra as águas — vapor escaldante ruge pelo ar.";
-      if(prev.life>0) return "🔥 As chamas devoram a vida que mal havia nascido.";
-      return "🔥 Uma faísca acende o nada. Calor se derrama pelo vazio.";
-    }
-    if(el==="agua"){
-      if(prev.heat>=2) return "💧 A água toca o fogo — sibila e se ergue em névoa.";
-      if(prev.land>0) return "💧 A água banha a terra — algo verde estremece e desperta.";
-      return "💧 Águas se acumulam, frias, sobre o mundo silencioso.";
-    }
-    if(el==="terra"){
-      if(prev.water>=2) return "🌍 Solo fértil emerge das águas — o berço da vida.";
-      return "🌍 Continentes se erguem, sólidos, firmes, eternos.";
-    }
-    if(el==="ar"){
-      if(prev.heat>=2) return "💨 O vento atiça as brasas num incêndio faminto.";
-      if(prev.life>0) return "💨 A brisa carrega sementes por toda a extensão do mundo.";
-      if(prev.water>=3) return "💨 Ventos furiosos levantam tempestades sobre as águas.";
-      return "💨 Ventos varrem o mundo vazio, inquietos e sem rumo.";
-    }
-    return "";
-  }
-
   // ================= AUDIO =================
   const Audio = (function(){
     let ctx=null, master=null;
     let muted = localStorage.getItem("genesis_muted")==="1";
-    function ensure(){
-      if(ctx) return;
-      const AC = window.AudioContext||window.webkitAudioContext; if(!AC) return;
-      ctx = new AC(); master = ctx.createGain(); master.gain.value=0.5; master.connect(ctx.destination);
-    }
+    function ensure(){ if(ctx) return; const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      ctx=new AC(); master=ctx.createGain(); master.gain.value=0.5; master.connect(ctx.destination); }
     function now(){ return ctx.currentTime; }
-    function tone(freq, t0, dur, type, vol, glideTo){
-      if(!ctx) return;
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type||"sine"; o.frequency.setValueAtTime(freq, t0);
-      if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0+dur);
-      g.gain.setValueAtTime(0.0001, t0);
-      g.gain.exponentialRampToValueAtTime(vol, t0+0.012);
-      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
-      o.connect(g); g.connect(master); o.start(t0); o.stop(t0+dur+0.02);
-    }
-    function noise(t0, dur, vol, filterType, freq){
-      if(!ctx) return;
-      const n=ctx.createBufferSource();
-      const buf=ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
-      const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1);
-      n.buffer=buf;
+    function tone(freq,t0,dur,type,vol,glideTo){ if(!ctx) return;
+      const o=ctx.createOscillator(), g=ctx.createGain(); o.type=type||"sine"; o.frequency.setValueAtTime(freq,t0);
+      if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo,t0+dur);
+      g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      o.connect(g); g.connect(master); o.start(t0); o.stop(t0+dur+0.02); }
+    function noise(t0,dur,vol,filterType,freq){ if(!ctx) return;
+      const n=ctx.createBufferSource(); const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
+      const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1); n.buffer=buf;
       const f=ctx.createBiquadFilter(); f.type=filterType||"lowpass"; f.frequency.value=freq||800;
-      const g=ctx.createGain(); g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
-      n.connect(f); f.connect(g); g.connect(master); n.start(t0); n.stop(t0+dur);
-    }
+      const g=ctx.createGain(); g.gain.setValueAtTime(vol,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      n.connect(f); f.connect(g); g.connect(master); n.start(t0); n.stop(t0+dur); }
     function res(){ if(ctx&&ctx.state==="suspended") ctx.resume(); }
-    function element(el){
-      if(muted) return; ensure(); if(!ctx) return; res(); const t=now();
-      if(el==="fogo"){ noise(t,0.35,0.35,"highpass",900); tone(180,t,0.25,"sawtooth",0.12,90); }
-      else if(el==="agua"){ tone(680,t,0.28,"sine",0.18,240); tone(520,t+0.06,0.22,"sine",0.10,200); }
-      else if(el==="terra"){ tone(90,t,0.32,"square",0.20,60); noise(t,0.12,0.12,"lowpass",200); }
-      else if(el==="ar"){ noise(t,0.4,0.16,"bandpass",1400); tone(900,t,0.3,"triangle",0.06,1600); }
-    }
+    function element(fx){ if(muted) return; ensure(); if(!ctx) return; res(); const t=now();
+      if(fx==="up"){ noise(t,0.35,0.30,"highpass",900); tone(300,t,0.25,"sawtooth",0.10,140); }
+      else if(fx==="down"){ tone(680,t,0.28,"sine",0.18,240); tone(520,t+0.06,0.22,"sine",0.10,200); }
+      else if(fx==="heavy"){ tone(90,t,0.32,"square",0.20,60); noise(t,0.12,0.12,"lowpass",200); }
+      else { noise(t,0.4,0.16,"bandpass",1400); tone(900,t,0.3,"triangle",0.06,1600); } }
     function win(){ if(muted) return; ensure(); if(!ctx) return; res();
       const t=now(); [523,659,784,1047].forEach((f,i)=>tone(f,t+i*0.09,0.5,"triangle",0.16)); [262,392].forEach(f=>tone(f,t+0.28,0.7,"sine",0.10)); }
     function lose(){ if(muted) return; ensure(); if(!ctx) return; res();
@@ -513,7 +547,7 @@
     function unlock(){ if(muted) return; ensure(); if(!ctx) return; res();
       const t=now(); [784,1047,1319].forEach((f,i)=>tone(f,t+i*0.07,0.4,"triangle",0.15)); }
     function click(){ if(muted) return; ensure(); if(!ctx) return; res(); tone(420,now(),0.08,"triangle",0.08); }
-    function toggle(){ muted=!muted; localStorage.setItem("genesis_muted", muted?"1":"0"); return muted; }
+    function toggle(){ muted=!muted; localStorage.setItem("genesis_muted",muted?"1":"0"); return muted; }
     return {element,win,lose,boom,unlock,click,toggle, isMuted:()=>muted, ensure};
   })();
 
@@ -521,150 +555,133 @@
   const FX = (function(){
     const cv=$("fx"); const g=cv.getContext("2d");
     let W=0,H=0,dpr=1, parts=[], raf=null;
-    function resize(){
-      const r=cv.getBoundingClientRect(); if(!r.width) return;
-      dpr=Math.min(2, window.devicePixelRatio||1);
-      W=r.width; H=r.height; cv.width=W*dpr; cv.height=H*dpr; g.setTransform(dpr,0,0,dpr,0,0);
-    }
-    function worldCenter(){
-      const wr=$("world").getBoundingClientRect(), cr=cv.getBoundingClientRect();
-      return {x:wr.left-cr.left+wr.width/2, y:wr.top-cr.top+wr.height/2, r:wr.width/2};
-    }
-    function spawn(el, big){
-      const c=worldCenter(); const info=EL[el]||{color:"#fff",color2:"#fff"};
-      const n = big? 46 : 22;
+    function resize(){ const r=cv.getBoundingClientRect(); if(!r.width) return;
+      dpr=Math.min(2,window.devicePixelRatio||1); W=r.width; H=r.height; cv.width=W*dpr; cv.height=H*dpr; g.setTransform(dpr,0,0,dpr,0,0); }
+    function worldCenter(){ const wr=$("world").getBoundingClientRect(), cr=cv.getBoundingClientRect();
+      return {x:wr.left-cr.left+wr.width/2, y:wr.top-cr.top+wr.height/2, r:wr.width/2}; }
+    function spawn(fx, big, colA, colB){
+      const c=worldCenter(); const n=big?46:22;
       for(let i=0;i<n;i++){
         const ang=Math.random()*Math.PI*2, sp=(big?1.6:1)*(1+Math.random()*2.6);
         let vx=Math.cos(ang)*sp, vy=Math.sin(ang)*sp, grav=0, life=40+Math.random()*30, size=2+Math.random()*3;
-        if(el==="fogo"){ vy=-Math.abs(vy)-0.6; grav=-0.03; }
-        else if(el==="agua"){ grav=0.10; }
-        else if(el==="terra"){ vy=Math.abs(vy)*0.4; grav=0.14; size=2+Math.random()*4; }
-        else if(el==="ar"){ grav=0; life=50+Math.random()*30; }
-        const col = Math.random()<0.5? info.color : info.color2;
+        if(fx==="up"){ vy=-Math.abs(vy)-0.6; grav=-0.03; }
+        else if(fx==="down"){ grav=0.10; }
+        else if(fx==="heavy"){ vy=Math.abs(vy)*0.4; grav=0.14; size=2+Math.random()*4; }
+        else { grav=0; life=50+Math.random()*30; }
+        const col=Math.random()<0.5?colA:colB;
         parts.push({x:c.x+Math.cos(ang)*c.r*0.5, y:c.y+Math.sin(ang)*c.r*0.5, vx,vy,grav,life,max:life,size,col});
       }
       loop();
     }
-    function burst(color, n){
-      const c=worldCenter();
-      for(let i=0;i<(n||60);i++){
-        const ang=Math.random()*Math.PI*2, sp=1+Math.random()*4.5;
-        parts.push({x:c.x,y:c.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,grav:0.03,life:50+Math.random()*40,max:90,size:2+Math.random()*3,col:color});
-      }
-      loop();
-    }
-    function loop(){
-      if(raf) return;
-      const step=()=>{
-        g.clearRect(0,0,W,H);
-        for(let i=parts.length-1;i>=0;i--){
-          const p=parts[i]; p.vx*=0.98; p.vy=p.vy*0.98+p.grav; p.x+=p.vx; p.y+=p.vy; p.life--;
+    function burst(color,n){ const c=worldCenter();
+      for(let i=0;i<(n||60);i++){ const ang=Math.random()*Math.PI*2, sp=1+Math.random()*4.5;
+        parts.push({x:c.x,y:c.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,grav:0.03,life:50+Math.random()*40,max:90,size:2+Math.random()*3,col:color}); }
+      loop(); }
+    function loop(){ if(raf) return;
+      const step=()=>{ g.clearRect(0,0,W,H);
+        for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.vx*=0.98; p.vy=p.vy*0.98+p.grav; p.x+=p.vx; p.y+=p.vy; p.life--;
           if(p.life<=0){ parts.splice(i,1); continue; }
-          g.globalAlpha=Math.max(0, p.life/p.max); g.fillStyle=p.col;
-          g.beginPath(); g.arc(p.x,p.y,p.size,0,Math.PI*2); g.fill();
-        }
-        g.globalAlpha=1;
-        if(parts.length){ raf=requestAnimationFrame(step); } else { raf=null; }
-      };
-      raf=requestAnimationFrame(step);
-    }
+          g.globalAlpha=Math.max(0,p.life/p.max); g.fillStyle=p.col; g.beginPath(); g.arc(p.x,p.y,p.size,0,Math.PI*2); g.fill(); }
+        g.globalAlpha=1; if(parts.length){ raf=requestAnimationFrame(step); } else { raf=null; } };
+      raf=requestAnimationFrame(step); }
     window.addEventListener("resize", resize);
     return {spawn, burst, resize};
   })();
 
   // ---------- SCREEN MANAGER ----------
-  function showScreen(id){
-    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-    $(id).classList.add("active");
-    window.scrollTo(0,0);
-  }
+  function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); }
   let toastT=null;
-  function toast(msg){
-    const el=$("toast"); el.textContent=msg; el.classList.add("show");
-    clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1600);
-  }
+  function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1600); }
 
-  // ---------- GAME STATE / DOM ----------
+  // ---------- PROGRESS (per world) ----------
+  let progress=null;
+  try{ progress=JSON.parse(localStorage.getItem("genesis_progress")||"null"); }catch(e){}
+  if(!progress){ progress={}; try{ const old=JSON.parse(localStorage.getItem("genesis_unlocked")||"null"); if(old&&Object.keys(old).length) progress["1"]=old; }catch(e){} }
+  function saveProgress(){ localStorage.setItem("genesis_progress", JSON.stringify(progress)); }
+  function wUnlocked(id){ return progress[id] || (progress[id]={}); }
+  function medalCount(id){ return Object.keys(progress[id]||{}).length; }
+
+  // ---------- GAME RUNTIME ----------
   const worldEl=$("world"), worldEmo=$("worldEmo"), storyEl=$("story"), statsEl=$("stats"),
         slotsEl=$("slots"), handEl=$("hand"), ringEl=$("ring");
-  let seq=[], state=newState(), busy=false, prevStats=null;
+  let G=WORLD1, seq=[], state=null, busy=false, prevStats=null, cardMap={};
 
-  let unlocked = {};
-  try{ unlocked = JSON.parse(localStorage.getItem("genesis_unlocked")||"{}"); }catch(e){ unlocked={}; }
-  function save(){ localStorage.setItem("genesis_unlocked", JSON.stringify(unlocked)); }
-  function medalCount(){ return Object.keys(unlocked).length; }
-
-  function renderStats(s){
-    const items=[["🌡️",s.heat,"heat"],["💧",s.water,"water"],["⛰️",s.land,"land"],["🌿",s.life,"life"],["⚡",s.chaos,"chaos"]];
-    statsEl.innerHTML = items.map(([ic,v,k])=>{
-      const changed = prevStats && prevStats[k]!==v ? " changed":"";
+  function renderHand(){
+    handEl.innerHTML = G.cards.map(c=>{
+      const symCls = c.sym ? " sym" : "";
+      return `<div class="card" data-el="${c.key}" style="--cc:${c.color}">
+        <div class="glow"></div>
+        <div class="emoji${symCls}">${c.emoji}</div>
+        <div class="name">${c.name}</div></div>`;
+    }).join("");
+  }
+  function renderStats(){
+    statsEl.innerHTML = G.stats.map(([ic,key])=>{
+      const v=state[key], changed = prevStats && prevStats[key]!==v ? " changed":"";
       return `<span class="stat${changed}">${ic} <b>${v}</b></span>`;
     }).join("");
-    prevStats = {...s};
+    prevStats = {...state};
   }
   function renderSlots(){
-    slotsEl.innerHTML = [0,1,2].map(i=>{
-      if(seq[i]) return `<div class="slot filled"><span class="in">${EL[seq[i]].emoji}</span></div>`;
+    slotsEl.innerHTML = Array.from({length:G.plays},(_,i)=>{
+      if(seq[i]) return `<div class="slot filled"><span class="in">${cardMap[seq[i]].emoji}</span></div>`;
       return `<div class="slot">${i+1}</div>`;
     }).join("");
   }
-  function updateMedalUI(){ $("medalCount").textContent = medalCount(); }
+  function updateMedalUI(){ $("medalCount").textContent = medalCount(G.id); }
   function bumpWorld(){ worldEl.classList.remove("bump"); void worldEl.offsetWidth; worldEl.classList.add("bump"); }
   function setStory(t){ storyEl.textContent=t; storyEl.classList.remove("in"); void storyEl.offsetWidth; storyEl.classList.add("in"); }
   function pulseRing(color){ ringEl.style.borderColor=color; ringEl.classList.remove("go"); void ringEl.offsetWidth; ringEl.classList.add("go"); }
 
   function reset(){
-    seq=[]; state=newState(); busy=false; prevStats=null;
-    worldEmo.textContent="🌑"; worldEl.style.background=worldBg(state);
-    setStory("Diante de você, o vazio. Escolha 3 atos e defina o destino deste mundo.");
-    renderStats(state); renderSlots();
+    seq=[]; state=G.newState(); busy=false; prevStats=null;
+    worldEmo.textContent=G.initialEmoji; worldEl.style.background=G.bg(state);
+    setStory(G.storyStart);
+    renderStats(); renderSlots();
     [...handEl.children].forEach(c=>c.classList.remove("disabled"));
   }
 
   function playCard(el){
-    if(busy || seq.length>=3) return;
-    Audio.element(el); FX.spawn(el, false); pulseRing(EL[el].color);
+    if(busy || seq.length>=G.plays) return;
+    const cd=cardMap[el];
+    Audio.element(cd.fx); FX.spawn(cd.fx,false,cd.color,cd.color2); pulseRing(cd.color);
     const card=handEl.querySelector('.card[data-el="'+el+'"]');
     card.classList.remove("zap"); void card.offsetWidth; card.classList.add("zap");
-    const prev=state; state=applyCard(prev, el); seq.push(el);
-    setStory(reaction(prev, el));
-    worldEmo.textContent=worldEmoji(state, false); worldEl.style.background=worldBg(state);
-    bumpWorld(); renderStats(state); renderSlots();
-    if(seq.length>=3){
-      busy=true; [...handEl.children].forEach(c=>c.classList.add("disabled"));
-      setTimeout(finish, 800);
-    }
+    const prev=state; state=G.apply(prev, el); seq.push(el);
+    setStory(G.react(prev, el));
+    worldEmo.textContent=G.emoji(state,false); worldEl.style.background=G.bg(state);
+    bumpWorld(); renderStats(); renderSlots();
+    if(seq.length>=G.plays){ busy=true; [...handEl.children].forEach(c=>c.classList.add("disabled")); setTimeout(finish,800); }
   }
 
   function finish(){
-    const fateId=classify(state); const fate=FATES[fateId];
-    worldEmo.textContent=worldEmoji(state, true); worldEl.style.background=worldBg(state); bumpWorld();
+    const fateId=G.classify(state); const fate=G.fates[fateId];
+    worldEmo.textContent=G.emoji(state,true); worldEl.style.background=G.bg(state); bumpWorld();
     FX.burst(fate.color, fate.kind==="lose"?70:60);
-    if(fateId==="cataclismo") Audio.boom(); else if(fate.kind==="lose") Audio.lose(); else Audio.win();
-    const isNew = !unlocked[fateId];
-    if(isNew){ unlocked[fateId]={seq:[...seq]}; save(); }
+    if(fateId==="cataclismo"||fateId==="explosivo") Audio.boom(); else if(fate.kind==="lose") Audio.lose(); else Audio.win();
+    const u=wUnlocked(G.id); const isNew=!u[fateId];
+    if(isNew){ u[fateId]={seq:[...seq]}; saveProgress(); }
     updateMedalUI();
     $("endHalo").style.background=fate.color;
     const b=$("endBadge"); b.textContent=fate.badge; b.classList.remove("anim"); void b.offsetWidth; b.classList.add("anim");
-    $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : "Final desbloqueado";
-    $("endTitle").textContent = fate.emoji+" "+fate.title;
+    $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : (G.id===2 ? "Molécula criada" : "Final desbloqueado");
+    $("endTitle").textContent = fate.badge+" "+fate.title;
     $("endText").textContent = fate.text;
-    $("endSeq").textContent = seq.map(e=>EL[e].emoji).join(" ");
+    $("endSeq").textContent = seq.map(e=>cardMap[e].emoji).join("  ");
     $("newTag").classList.toggle("hidden", !isNew);
     setTimeout(()=>{ if(isNew) Audio.unlock(); $("endOverlay").classList.add("show"); }, 620);
   }
-
   function openGallery(){
-    $("galleryCount").textContent = medalCount();
-    $("galleryGrid").innerHTML = FATE_ORDER.map(id=>{
-      const f=FATES[id], got=unlocked[id];
-      if(got){
-        const s=got.seq.map(e=>EL[e].emoji).join(" ");
+    $("galleryTitle").textContent = "Coleção · "+G.name;
+    $("galleryCount").textContent = medalCount(G.id);
+    const u=progress[G.id]||{};
+    $("galleryGrid").innerHTML = G.fateOrder.map(id=>{
+      const f=G.fates[id], got=u[id];
+      if(got){ const s=got.seq.map(e=>cardMap[e].emoji).join("  ");
         return `<div class="gcell ${f.kind}"><div class="ge">${f.badge}</div>
-            <div><div class="gt">${f.title}</div><div class="gseq">${s}</div></div></div>`;
-      }
+          <div><div class="gt">${f.title}</div><div class="gseq">${s}</div></div></div>`; }
       return `<div class="gcell locked"><div class="ge">🔒</div>
-          <div><div class="gt">? ? ?</div><div class="gh">${f.hint}</div></div></div>`;
+        <div><div class="gt">? ? ?</div><div class="gh">${f.hint}</div></div></div>`;
     }).join("");
     $("galleryOverlay").classList.add("show");
   }
@@ -673,74 +690,59 @@
   function renderWorlds(){
     $("worldsGrid").innerHTML = WORLDS.map(w=>{
       if(w.playable){
-        const prog = w.id===1 ? `<div class="prog">${medalCount()}/8</div>` : "";
+        const prog = `<div class="prog">${medalCount(w.id)}/8</div>`;
         return `<div class="wtile playable" data-world="${w.id}">
           <div class="glow"></div><div class="num">MUNDO ${w.id}</div>${prog}
           <div class="wemoji">${w.emoji}</div>
           <div class="wname">${w.name}</div><div class="wtag">${w.tag}</div></div>`;
       }
       return `<div class="wtile locked" data-world="${w.id}">
-        <div class="num">MUNDO ${w.id}</div>
-        <div class="wemoji">${w.emoji}</div>
+        <div class="num">MUNDO ${w.id}</div><div class="wemoji">${w.emoji}</div>
         <div class="wname">${w.name}</div><div class="wtag">${w.tag}</div></div>`;
     }).join("");
   }
 
   function enterWorld(id){
-    if(id===1){
-      showScreen("s-game");
-      setTimeout(()=>FX.resize(), 60);
-      reset();
-    }
+    const g=GAMES[id]; if(!g) return;
+    G=g; cardMap={}; G.cards.forEach(c=>cardMap[c.key]=c);
+    $("gameTitle").innerHTML = `${G.name}<small>Mundo ${G.id}</small>`;
+    $("lvlName").textContent = G.lvl;
+    showScreen("s-game");
+    renderHand();
+    setTimeout(()=>FX.resize(), 60);
+    reset(); updateMedalUI();
   }
 
-  // ---------- SOUND BUTTONS (sync all) ----------
-  function refreshMuteButtons(){
-    const m=Audio.isMuted();
-    document.querySelectorAll(".muteBtn").forEach(btn=>{
-      if(btn.id==="muteMenu") btn.textContent = m ? "🔇 Som" : "🔊 Som";
-      else btn.textContent = m ? "🔇" : "🔊";
-    });
-  }
+  // ---------- SOUND BUTTONS ----------
+  function refreshMuteButtons(){ const m=Audio.isMuted();
+    document.querySelectorAll(".muteBtn").forEach(btn=>{ btn.textContent = btn.id==="muteMenu" ? (m?"🔇 Som":"🔊 Som") : (m?"🔇":"🔊"); }); }
 
   // ---------- EVENTS ----------
-  // menu
   $("btnJogar").onclick=()=>{ Audio.ensure(); Audio.click(); showScreen("s-worlds"); renderWorlds(); };
   $("btnEmblemasMenu").onclick=()=>{ Audio.click(); openGallery(); };
-  $("btnShare").onclick=()=>{
-    Audio.click();
+  $("btnShare").onclick=()=>{ Audio.click();
     const GAME_URL="https://alvarony.github.io/jogo-genesis/";
     const msg="🌍 *GÊNESIS* — crie mundos e descubra seus destinos!\n\nCada mundo tem 8 finais secretos pra desbloquear. Será que você acha todos? 🏅\n\nJoga aí: "+GAME_URL;
-    const wa="https://wa.me/?text="+encodeURIComponent(msg);
-    window.open(wa,"_blank","noopener");
+    window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank","noopener");
   };
-  // world select
   $("backToMenu").onclick=()=>{ Audio.click(); showScreen("s-menu"); };
   $("worldsGrid").addEventListener("click", e=>{
     const t=e.target.closest(".wtile"); if(!t) return;
     const id=+t.dataset.world; const w=WORLDS.find(x=>x.id===id);
-    if(w && w.playable){ Audio.click(); enterWorld(id); }
+    if(w&&w.playable){ Audio.click(); enterWorld(id); }
     else { t.classList.remove("shake"); void t.offsetWidth; t.classList.add("shake"); toast("🔒 Mundo em breve!"); }
   });
-  // game
   $("backToWorlds").onclick=()=>{ Audio.click(); showScreen("s-worlds"); renderWorlds(); };
   handEl.addEventListener("click", e=>{ const c=e.target.closest(".card"); if(c) playCard(c.dataset.el); });
   $("resetBtn").onclick=()=>{ Audio.click(); reset(); };
   $("openGallery").onclick=()=>{ Audio.click(); openGallery(); };
-  // overlays
   $("playAgain").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); reset(); };
   $("toGallery").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); openGallery(); };
   $("closeGallery").onclick=()=>{ Audio.click(); $("galleryOverlay").classList.remove("show"); };
-  // mute (any)
-  document.querySelectorAll(".muteBtn").forEach(btn=>{
-    btn.onclick=()=>{ const m=Audio.toggle(); if(!m){ Audio.ensure(); Audio.click(); } refreshMuteButtons(); };
-  });
+  document.querySelectorAll(".muteBtn").forEach(btn=>{ btn.onclick=()=>{ const m=Audio.toggle(); if(!m){ Audio.ensure(); Audio.click(); } refreshMuteButtons(); }; });
 
-  // ---------- INIT ----------
+  window.__genesis = {GAMES, WORLD1, WORLD2, showScreen};
   refreshMuteButtons();
-  updateMedalUI();
-  reset();
-  window.__genesis = {simulate, classify, FATES, showScreen};
 })();
 </script>
 </body>
