@@ -21,19 +21,81 @@
   }
   .wrap{width:100%; max-width:520px; position:relative; z-index:1}
 
+  /* ---------- SCREENS ---------- */
+  .screen{display:none}
+  .screen.active{display:block; animation:screenIn .38s ease}
+  @keyframes screenIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
   .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px}
-  .title{font-size:26px; font-weight:800; letter-spacing:.04em}
-  .title small{display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.22em; text-transform:uppercase}
+  .title{font-size:22px; font-weight:800; letter-spacing:.04em}
+  .title small{display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.18em; text-transform:uppercase}
   .topbtns{display:flex; gap:8px; align-items:center}
-  .iconbtn, .medals-btn{
+  .iconbtn, .medals-btn, .backbtn{
     background:var(--panel); border:1px solid var(--panel-b); color:var(--txt);
     border-radius:12px; cursor:pointer; font-weight:700; font-size:14px;
   }
   .medals-btn{padding:9px 14px}
   .medals-btn b{color:var(--gold)}
   .iconbtn{width:40px; height:40px; font-size:17px; display:flex; align-items:center; justify-content:center}
-  .iconbtn:active,.medals-btn:active{transform:translateY(1px)}
+  .backbtn{padding:9px 14px; display:flex; align-items:center; gap:6px}
+  .iconbtn:active,.medals-btn:active,.backbtn:active{transform:translateY(1px)}
 
+  /* ---------- MENU ---------- */
+  .menu{min-height:78vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:6px; padding:10px 0}
+  .brand{font-size:52px; font-weight:900; letter-spacing:.06em;
+    background:linear-gradient(180deg,#fff,#a9b6e6); -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 8px 40px rgba(120,140,255,.25)}
+  .tagline{color:var(--muted); font-size:14px; letter-spacing:.06em; margin-bottom:8px}
+  .menu-orb{width:150px; height:150px; margin:14px 0 26px; position:relative}
+  .menu-orb .core{position:absolute; inset:0; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#5b6cff,#141a33 68%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 18px 60px rgba(80,100,255,.35), inset 0 -14px 34px rgba(0,0,0,.5), inset 0 12px 26px rgba(255,255,255,.15);
+    overflow:hidden}
+  .menu-orb .core::after{content:""; position:absolute; inset:-30%; border-radius:50%;
+    background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.12),transparent 42%);
+    animation:spin 12s linear infinite; mix-blend-mode:screen}
+  .menu-orb .ico{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:66px; z-index:2;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.5)); animation:float 4s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(-4px)}50%{transform:translateY(6px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .orbit{position:absolute; inset:-14px; border-radius:50%; animation:spin 20s linear infinite}
+  .orbit span{position:absolute; top:-4px; left:50%; transform:translateX(-50%); font-size:20px}
+  .menu-btns{display:flex; flex-direction:column; gap:12px; width:100%; max-width:280px}
+  .btn-primary{
+    padding:16px; border-radius:16px; border:none; cursor:pointer; font-weight:800; font-size:19px;
+    background:linear-gradient(180deg,#ffd76b,#f6b23c); color:#231a02;
+    box-shadow:0 10px 26px rgba(246,178,60,.32); letter-spacing:.03em;
+  }
+  .btn-primary:active{transform:translateY(2px)}
+  .menu-row{display:flex; gap:12px}
+  .btn-sec{flex:1; padding:12px; border-radius:14px; cursor:pointer; font-weight:700; font-size:14px;
+    background:var(--panel); border:1px solid var(--panel-b); color:var(--txt)}
+  .btn-sec:active{transform:translateY(1px)}
+  .menu-foot{margin-top:20px; font-size:12px; color:#6b7699}
+
+  /* ---------- WORLD SELECT ---------- */
+  .worlds-head{text-align:center; margin:4px 0 16px}
+  .worlds-head h2{font-size:22px; font-weight:800}
+  .worlds-head p{font-size:13px; color:var(--muted); margin-top:3px}
+  .worlds-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
+  .wtile{position:relative; border:1px solid var(--panel-b); border-radius:18px; padding:16px 12px;
+    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+    text-align:center; cursor:pointer; transition:transform .12s ease, border-color .2s, box-shadow .2s; overflow:hidden}
+  .wtile .num{position:absolute; top:8px; left:10px; font-size:11px; font-weight:800; color:var(--muted); letter-spacing:.1em}
+  .wtile .wemoji{font-size:44px; line-height:1; margin:6px 0 8px; filter:drop-shadow(0 3px 8px rgba(0,0,0,.4))}
+  .wtile .wname{font-size:14px; font-weight:800}
+  .wtile .wtag{font-size:11px; color:var(--muted); margin-top:3px; min-height:14px}
+  .wtile.playable{border-color:rgba(246,196,83,.35)}
+  .wtile.playable:hover{transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,.35); border-color:var(--gold)}
+  .wtile.playable .glow{position:absolute; left:50%; bottom:-40%; width:130%; height:80%; transform:translateX(-50%);
+    border-radius:50%; background:var(--gold); opacity:.16; filter:blur(20px)}
+  .wtile.locked{opacity:.62; cursor:not-allowed}
+  .wtile.locked .wemoji{filter:grayscale(1) opacity(.6)}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .wtile.shake{animation:shake .4s ease}
+  .wtile .prog{position:absolute; top:8px; right:10px; font-size:11px; font-weight:800; color:var(--gold)}
+
+  /* ---------- GAME (world 1) ---------- */
   .scene{
     background:linear-gradient(180deg,var(--bg2),rgba(20,26,51,.4));
     border:1px solid var(--panel-b); border-radius:20px; padding:16px; text-align:center;
@@ -53,7 +115,6 @@
   .world .shine{position:absolute; inset:-30%; border-radius:50%;
     background:conic-gradient(from 0deg, transparent, rgba(255,255,255,.10), transparent 40%);
     animation:spin 14s linear infinite; mix-blend-mode:screen}
-  @keyframes spin{to{transform:rotate(360deg)}}
   .world .emo{position:relative; z-index:2; filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))}
   .ring{position:absolute; inset:0; border-radius:50%; border:2px solid transparent; pointer-events:none}
   @keyframes ringPulse{0%{transform:scale(.85); opacity:.9} 100%{transform:scale(1.35); opacity:0}}
@@ -141,14 +202,59 @@
   .gcell .gseq{font-size:13px; letter-spacing:.12em; margin-top:5px}
   .progress{font-size:13px; color:var(--muted); margin-bottom:10px}
   .progress b{color:var(--gold)}
+
+  /* toast */
+  .toast{position:fixed; left:50%; bottom:34px; transform:translateX(-50%) translateY(20px);
+    background:#232b4d; border:1px solid var(--panel-b); color:var(--txt); padding:11px 18px; border-radius:14px;
+    font-weight:700; font-size:14px; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:80}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- ============ MENU ============ -->
+<div class="wrap screen active" id="s-menu">
+  <div class="menu">
+    <div class="brand">GÊNESIS</div>
+    <div class="tagline">8 mundos para criar — e descobrir seus destinos</div>
+    <div class="menu-orb">
+      <div class="orbit"><span>🔥</span></div>
+      <div class="core"></div>
+      <div class="ico">🌌</div>
+    </div>
+    <div class="menu-btns">
+      <button class="btn-primary" id="btnJogar">▶ Jogar</button>
+      <div class="menu-row">
+        <button class="btn-sec" id="btnEmblemasMenu">🏅 Emblemas</button>
+        <button class="btn-sec muteBtn" id="muteMenu">🔊 Som</button>
+      </div>
+    </div>
+    <div class="menu-foot">v2 · feito com ♥</div>
+  </div>
+</div>
+
+<!-- ============ WORLD SELECT ============ -->
+<div class="wrap screen" id="s-worlds">
   <div class="topbar">
-    <div class="title">Gênesis<small>crie um mundo</small></div>
+    <button class="backbtn" id="backToMenu">← Menu</button>
     <div class="topbtns">
-      <button class="iconbtn" id="muteBtn" title="Som">🔊</button>
+      <button class="iconbtn muteBtn" id="muteWorlds">🔊</button>
+    </div>
+  </div>
+  <div class="worlds-head">
+    <h2>Escolha um mundo</h2>
+    <p>8 mundos, cada um com seus próprios destinos</p>
+  </div>
+  <div class="worlds-grid" id="worldsGrid"></div>
+</div>
+
+<!-- ============ GAME (Mundo 1: Os Elementos) ============ -->
+<div class="wrap screen" id="s-game">
+  <div class="topbar">
+    <button class="backbtn" id="backToWorlds">← Mundos</button>
+    <div class="title" style="text-align:center; flex:1">Os Elementos<small>Mundo 1</small></div>
+    <div class="topbtns">
+      <button class="iconbtn muteBtn" id="muteGame">🔊</button>
       <button class="medals-btn" id="openGallery">🏅 <b id="medalCount">0</b>/8</button>
     </div>
   </div>
@@ -180,6 +286,7 @@
   </div>
 </div>
 
+<!-- overlays -->
 <div class="overlay" id="endOverlay">
   <div class="modal">
     <div class="halo" id="endHalo"></div>
@@ -198,7 +305,7 @@
 
 <div class="overlay" id="galleryOverlay">
   <div class="modal">
-    <div class="kind">Coleção de destinos</div>
+    <div class="kind">Coleção de destinos · Os Elementos</div>
     <h2 style="margin-bottom:8px">Emblemas</h2>
     <div class="progress"><b id="galleryCount">0</b> de 8 destinos descobertos</div>
     <div class="gallery-grid" id="galleryGrid"></div>
@@ -208,10 +315,24 @@
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 (function(){
   "use strict";
   const $ = id=>document.getElementById(id);
+
+  // ---------- WORLDS ----------
+  const WORLDS = [
+    {id:1, name:"Os Elementos", emoji:"🌍", tag:"4 elementos · 8 finais", playable:true},
+    {id:2, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:3, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:4, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:5, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:6, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:7, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:8, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+  ];
 
   // ---------- ELEMENTS ----------
   const EL = {
@@ -333,16 +454,14 @@
     return "";
   }
 
-  // ================= AUDIO (Web Audio, synth — no files) =================
+  // ================= AUDIO =================
   const Audio = (function(){
     let ctx=null, master=null;
     let muted = localStorage.getItem("genesis_muted")==="1";
     function ensure(){
       if(ctx) return;
-      const AC = window.AudioContext||window.webkitAudioContext;
-      if(!AC) return;
-      ctx = new AC();
-      master = ctx.createGain(); master.gain.value=0.5; master.connect(ctx.destination);
+      const AC = window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      ctx = new AC(); master = ctx.createGain(); master.gain.value=0.5; master.connect(ctx.destination);
     }
     function now(){ return ctx.currentTime; }
     function tone(freq, t0, dur, type, vol, glideTo){
@@ -357,47 +476,42 @@
     }
     function noise(t0, dur, vol, filterType, freq){
       if(!ctx) return;
-      const n = ctx.createBufferSource();
-      const buf = ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
-      const d = buf.getChannelData(0);
-      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1);
+      const n=ctx.createBufferSource();
+      const buf=ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
+      const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1);
       n.buffer=buf;
       const f=ctx.createBiquadFilter(); f.type=filterType||"lowpass"; f.frequency.value=freq||800;
-      const g=ctx.createGain();
-      g.gain.setValueAtTime(vol, t0);
-      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+      const g=ctx.createGain(); g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
       n.connect(f); f.connect(g); g.connect(master); n.start(t0); n.stop(t0+dur);
     }
+    function res(){ if(ctx&&ctx.state==="suspended") ctx.resume(); }
     function element(el){
-      if(muted) return; ensure(); if(!ctx) return;
-      if(ctx.state==="suspended") ctx.resume();
-      const t=now();
+      if(muted) return; ensure(); if(!ctx) return; res(); const t=now();
       if(el==="fogo"){ noise(t,0.35,0.35,"highpass",900); tone(180,t,0.25,"sawtooth",0.12,90); }
       else if(el==="agua"){ tone(680,t,0.28,"sine",0.18,240); tone(520,t+0.06,0.22,"sine",0.10,200); }
       else if(el==="terra"){ tone(90,t,0.32,"square",0.20,60); noise(t,0.12,0.12,"lowpass",200); }
       else if(el==="ar"){ noise(t,0.4,0.16,"bandpass",1400); tone(900,t,0.3,"triangle",0.06,1600); }
     }
-    function chord(freqs, t0, dur, type, vol){ freqs.forEach(f=>tone(f,t0,dur,type||"triangle",vol||0.14)); }
-    function win(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
-      const t=now(); const s=[523,659,784,1047]; s.forEach((f,i)=>tone(f,t+i*0.09,0.5,"triangle",0.16)); chord([262,392],t+0.28,0.7,"sine",0.10); }
-    function lose(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+    function win(){ if(muted) return; ensure(); if(!ctx) return; res();
+      const t=now(); [523,659,784,1047].forEach((f,i)=>tone(f,t+i*0.09,0.5,"triangle",0.16)); [262,392].forEach(f=>tone(f,t+0.28,0.7,"sine",0.10)); }
+    function lose(){ if(muted) return; ensure(); if(!ctx) return; res();
       const t=now(); tone(300,t,0.6,"sawtooth",0.16,120); tone(200,t+0.12,0.7,"sine",0.12,90); }
-    function boom(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+    function boom(){ if(muted) return; ensure(); if(!ctx) return; res();
       const t=now(); noise(t,0.7,0.5,"lowpass",300); tone(70,t,0.6,"square",0.25,40); }
-    function unlock(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
+    function unlock(){ if(muted) return; ensure(); if(!ctx) return; res();
       const t=now(); [784,1047,1319].forEach((f,i)=>tone(f,t+i*0.07,0.4,"triangle",0.15)); }
-    function click(){ if(muted) return; ensure(); if(!ctx) return; if(ctx.state==="suspended") ctx.resume();
-      tone(420,now(),0.08,"triangle",0.08); }
+    function click(){ if(muted) return; ensure(); if(!ctx) return; res(); tone(420,now(),0.08,"triangle",0.08); }
     function toggle(){ muted=!muted; localStorage.setItem("genesis_muted", muted?"1":"0"); return muted; }
-    return {element,win,lose,boom,unlock,click, toggle, isMuted:()=>muted, ensure};
+    return {element,win,lose,boom,unlock,click,toggle, isMuted:()=>muted, ensure};
   })();
 
-  // ================= PARTICLES (canvas) =================
+  // ================= PARTICLES =================
   const FX = (function(){
     const cv=$("fx"); const g=cv.getContext("2d");
     let W=0,H=0,dpr=1, parts=[], raf=null;
     function resize(){
-      const r=cv.getBoundingClientRect(); dpr=Math.min(2, window.devicePixelRatio||1);
+      const r=cv.getBoundingClientRect(); if(!r.width) return;
+      dpr=Math.min(2, window.devicePixelRatio||1);
       W=r.width; H=r.height; cv.width=W*dpr; cv.height=H*dpr; g.setTransform(dpr,0,0,dpr,0,0);
     }
     function worldCenter(){
@@ -443,11 +557,22 @@
       raf=requestAnimationFrame(step);
     }
     window.addEventListener("resize", resize);
-    setTimeout(resize,50);
     return {spawn, burst, resize};
   })();
 
-  // ---------- STATE / DOM ----------
+  // ---------- SCREEN MANAGER ----------
+  function showScreen(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    $(id).classList.add("active");
+    window.scrollTo(0,0);
+  }
+  let toastT=null;
+  function toast(msg){
+    const el=$("toast"); el.textContent=msg; el.classList.add("show");
+    clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1600);
+  }
+
+  // ---------- GAME STATE / DOM ----------
   const worldEl=$("world"), worldEmo=$("worldEmo"), storyEl=$("story"), statsEl=$("stats"),
         slotsEl=$("slots"), handEl=$("hand"), ringEl=$("ring");
   let seq=[], state=newState(), busy=false, prevStats=null;
@@ -474,9 +599,7 @@
   function updateMedalUI(){ $("medalCount").textContent = medalCount(); }
   function bumpWorld(){ worldEl.classList.remove("bump"); void worldEl.offsetWidth; worldEl.classList.add("bump"); }
   function setStory(t){ storyEl.textContent=t; storyEl.classList.remove("in"); void storyEl.offsetWidth; storyEl.classList.add("in"); }
-  function pulseRing(color){
-    ringEl.style.borderColor=color; ringEl.classList.remove("go"); void ringEl.offsetWidth; ringEl.classList.add("go");
-  }
+  function pulseRing(color){ ringEl.style.borderColor=color; ringEl.classList.remove("go"); void ringEl.offsetWidth; ringEl.classList.add("go"); }
 
   function reset(){
     seq=[]; state=newState(); busy=false; prevStats=null;
@@ -488,43 +611,27 @@
 
   function playCard(el){
     if(busy || seq.length>=3) return;
-    Audio.element(el);
-    FX.spawn(el, false);
-    pulseRing(EL[el].color);
+    Audio.element(el); FX.spawn(el, false); pulseRing(EL[el].color);
     const card=handEl.querySelector('.card[data-el="'+el+'"]');
     card.classList.remove("zap"); void card.offsetWidth; card.classList.add("zap");
-
-    const prev=state;
-    state=applyCard(prev, el);
-    seq.push(el);
+    const prev=state; state=applyCard(prev, el); seq.push(el);
     setStory(reaction(prev, el));
-    worldEmo.textContent=worldEmoji(state, false);
-    worldEl.style.background=worldBg(state);
-    bumpWorld();
-    renderStats(state); renderSlots();
-
+    worldEmo.textContent=worldEmoji(state, false); worldEl.style.background=worldBg(state);
+    bumpWorld(); renderStats(state); renderSlots();
     if(seq.length>=3){
-      busy=true;
-      [...handEl.children].forEach(c=>c.classList.add("disabled"));
+      busy=true; [...handEl.children].forEach(c=>c.classList.add("disabled"));
       setTimeout(finish, 800);
     }
   }
 
   function finish(){
-    const fateId=classify(state);
-    const fate=FATES[fateId];
-    worldEmo.textContent=worldEmoji(state, true);
-    worldEl.style.background=worldBg(state);
-    bumpWorld();
+    const fateId=classify(state); const fate=FATES[fateId];
+    worldEmo.textContent=worldEmoji(state, true); worldEl.style.background=worldBg(state); bumpWorld();
     FX.burst(fate.color, fate.kind==="lose"?70:60);
-    if(fateId==="cataclismo") Audio.boom();
-    else if(fate.kind==="lose") Audio.lose();
-    else Audio.win();
-
+    if(fateId==="cataclismo") Audio.boom(); else if(fate.kind==="lose") Audio.lose(); else Audio.win();
     const isNew = !unlocked[fateId];
     if(isNew){ unlocked[fateId]={seq:[...seq]}; save(); }
     updateMedalUI();
-
     $("endHalo").style.background=fate.color;
     const b=$("endBadge"); b.textContent=fate.badge; b.classList.remove("anim"); void b.offsetWidth; b.classList.add("anim");
     $("endKind").textContent = fate.kind==="lose" ? "Destino alcançado" : "Final desbloqueado";
@@ -550,20 +657,71 @@
     $("galleryOverlay").classList.add("show");
   }
 
+  // ---------- WORLD SELECT ----------
+  function renderWorlds(){
+    $("worldsGrid").innerHTML = WORLDS.map(w=>{
+      if(w.playable){
+        const prog = w.id===1 ? `<div class="prog">${medalCount()}/8</div>` : "";
+        return `<div class="wtile playable" data-world="${w.id}">
+          <div class="glow"></div><div class="num">MUNDO ${w.id}</div>${prog}
+          <div class="wemoji">${w.emoji}</div>
+          <div class="wname">${w.name}</div><div class="wtag">${w.tag}</div></div>`;
+      }
+      return `<div class="wtile locked" data-world="${w.id}">
+        <div class="num">MUNDO ${w.id}</div>
+        <div class="wemoji">${w.emoji}</div>
+        <div class="wname">${w.name}</div><div class="wtag">${w.tag}</div></div>`;
+    }).join("");
+  }
+
+  function enterWorld(id){
+    if(id===1){
+      showScreen("s-game");
+      setTimeout(()=>FX.resize(), 60);
+      reset();
+    }
+  }
+
+  // ---------- SOUND BUTTONS (sync all) ----------
+  function refreshMuteButtons(){
+    const m=Audio.isMuted();
+    document.querySelectorAll(".muteBtn").forEach(btn=>{
+      if(btn.id==="muteMenu") btn.textContent = m ? "🔇 Som" : "🔊 Som";
+      else btn.textContent = m ? "🔇" : "🔊";
+    });
+  }
+
   // ---------- EVENTS ----------
+  // menu
+  $("btnJogar").onclick=()=>{ Audio.ensure(); Audio.click(); showScreen("s-worlds"); renderWorlds(); };
+  $("btnEmblemasMenu").onclick=()=>{ Audio.click(); openGallery(); };
+  // world select
+  $("backToMenu").onclick=()=>{ Audio.click(); showScreen("s-menu"); };
+  $("worldsGrid").addEventListener("click", e=>{
+    const t=e.target.closest(".wtile"); if(!t) return;
+    const id=+t.dataset.world; const w=WORLDS.find(x=>x.id===id);
+    if(w && w.playable){ Audio.click(); enterWorld(id); }
+    else { t.classList.remove("shake"); void t.offsetWidth; t.classList.add("shake"); toast("🔒 Mundo em breve!"); }
+  });
+  // game
+  $("backToWorlds").onclick=()=>{ Audio.click(); showScreen("s-worlds"); renderWorlds(); };
   handEl.addEventListener("click", e=>{ const c=e.target.closest(".card"); if(c) playCard(c.dataset.el); });
   $("resetBtn").onclick=()=>{ Audio.click(); reset(); };
+  $("openGallery").onclick=()=>{ Audio.click(); openGallery(); };
+  // overlays
   $("playAgain").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); reset(); };
   $("toGallery").onclick=()=>{ Audio.click(); $("endOverlay").classList.remove("show"); openGallery(); };
-  $("openGallery").onclick=()=>{ Audio.click(); openGallery(); };
-  $("closeGallery").onclick=()=>{ Audio.click(); $("galleryOverlay").classList.remove("show"); reset(); };
-  $("muteBtn").onclick=()=>{ const m=Audio.toggle(); $("muteBtn").textContent=m?"🔇":"🔊"; if(!m){ Audio.ensure(); Audio.click(); } };
+  $("closeGallery").onclick=()=>{ Audio.click(); $("galleryOverlay").classList.remove("show"); };
+  // mute (any)
+  document.querySelectorAll(".muteBtn").forEach(btn=>{
+    btn.onclick=()=>{ const m=Audio.toggle(); if(!m){ Audio.ensure(); Audio.click(); } refreshMuteButtons(); };
+  });
 
-  // init
-  $("muteBtn").textContent = Audio.isMuted()?"🔇":"🔊";
-  window.__genesis = {simulate, classify, FATES};
+  // ---------- INIT ----------
+  refreshMuteButtons();
   updateMedalUI();
   reset();
+  window.__genesis = {simulate, classify, FATES, showScreen};
 })();
 </script>
 </body>
