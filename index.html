@@ -500,14 +500,216 @@
     fates:W2_FATES, fateOrder:["vida","agua","acucar","gascarbonico","metano","amonia","explosivo","inerte"],
   };
 
-  const GAMES = {1:WORLD1, 2:WORLD2};
+  /* ============================================================
+     MUNDO 3 — O CORAÇÃO  (emoções: Amor, Medo, Ódio, Curiosidade)
+  ============================================================ */
+  const W3_CARDS = [
+    {key:"amor",        emoji:"❤️", name:"AMOR",         color:"#ff6b9d", color2:"#ffb3cf", fx:"spread"},
+    {key:"medo",        emoji:"😨", name:"MEDO",         color:"#7d6bff", color2:"#b3a8ff", fx:"down"},
+    {key:"odio",        emoji:"😡", name:"ÓDIO",         color:"#ff4d4d", color2:"#ff8a6b", fx:"up"},
+    {key:"curiosidade", emoji:"🔍", name:"CURIOSIDADE",  color:"#ffd76b", color2:"#fff0b3", fx:"spread"},
+  ];
+  function w3_new(){ return {amor:0, medo:0, odio:0, sabedoria:0, obsessao:0, teveAmor:0}; }
+  function w3_apply(prev, el){
+    const s={...prev};
+    if(el==="amor"){ s.amor+=2; s.teveAmor=1; if(prev.medo>0) s.medo-=1; }            // amor acalma o medo
+    else if(el==="medo"){ s.medo+=2; if(prev.amor>0) s.amor-=1; }                     // medo corrói o amor
+    else if(el==="odio"){ s.odio+=2; if(prev.amor>0) s.amor-=2; if(prev.medo>0) s.odio+=1; } // ódio destrói o amor; medo o alimenta
+    else if(el==="curiosidade"){
+      if(prev.amor>0) s.sabedoria+=2;                          // curiosidade guiada pelo amor = sabedoria
+      else if(prev.odio>0||prev.medo>0) s.obsessao+=2;         // curiosidade na escuridão = obsessão
+      else s.sabedoria+=1;                                     // curiosidade pura
+    }
+    return s;
+  }
+  function w3_classify(s){
+    if(s.teveAmor && s.amor<=0 && s.odio>=1) return "partido";   // amou e o ódio destruiu
+    if(s.odio>=4) return "furia";
+    if(s.obsessao>=2 || (s.sabedoria>=3 && s.amor<=0)) return "obsessao";
+    if(s.sabedoria>=2 && s.amor>=1) return "iluminacao";
+    if(s.amor>=3) return "amorpleno";
+    if(s.odio>=3) return "frieza";
+    if(s.medo>=2) return "medo";
+    return "indiferenca";
+  }
+  function w3_emoji(s, done){
+    if(!done && s.amor===0&&s.medo===0&&s.odio===0&&s.sabedoria===0&&s.obsessao===0) return "🤍";
+    if(s.teveAmor && s.amor<=0 && s.odio>=1) return "💔";
+    if(s.odio>=4) return "🔥";
+    if(s.obsessao>=2) return "🌀";
+    if(s.sabedoria>=2 && s.amor>=1) return "🌟";
+    if(s.amor>=3) return "💖";
+    if(s.amor>=1) return "❤️";
+    if(s.odio>=3) return "🖤";
+    if(s.medo>=2) return "😨";
+    if(s.odio>=1||s.medo>=1) return "😰";
+    return "🤍";
+  }
+  function w3_bg(s){
+    if(s.amor<=-1) return "radial-gradient(circle at 35% 30%,#ff5a7a,#2a0812 70%)";
+    if(s.odio>=4) return "radial-gradient(circle at 40% 30%,#ff4d3a,#2a0606 70%)";
+    if(s.obsessao>=2) return "radial-gradient(circle at 35% 30%,#a678ff,#160a2a 70%)";
+    if(s.sabedoria>=2 && s.amor>=1) return "radial-gradient(circle at 35% 30%,#ffd76b,#2a2410 70%)";
+    if(s.amor>=3) return "radial-gradient(circle at 35% 30%,#ff8fb3,#2a0e18 70%)";
+    if(s.amor>=1) return "radial-gradient(circle at 35% 30%,#ff6b9d,#240a14 70%)";
+    if(s.odio>=3) return "radial-gradient(circle at 35% 30%,#5a6070,#14161c 70%)";
+    if(s.medo>=2) return "radial-gradient(circle at 35% 30%,#7d6bff,#0f0d24 70%)";
+    return "radial-gradient(circle at 35% 30%,#3a3f52,#0e1018 70%)";
+  }
+  function w3_react(prev, el){
+    if(el==="amor"){ if(prev.medo>0) return "❤️ O amor acalma o medo que tremia por dentro.";
+      if(prev.odio>0) return "❤️ O amor tenta abrir uma fresta na couraça do ódio.";
+      return "❤️ Um afeto caloroso floresce no peito."; }
+    if(el==="medo"){ if(prev.amor>0) return "😨 O medo se infiltra e faz o amor hesitar.";
+      return "😨 Uma sombra fria de medo se espalha por dentro."; }
+    if(el==="odio"){ if(prev.medo>0) return "😡 O medo vira combustível — e o ódio cresce.";
+      if(prev.amor>0) return "😡 O ódio queima o amor até virar cinzas.";
+      return "😡 Um rancor amargo toma conta de tudo."; }
+    if(el==="curiosidade"){ if(prev.amor>0) return "🔍 A curiosidade, guiada pelo amor, floresce em sabedoria.";
+      if(prev.odio>0||prev.medo>0) return "🔍 A curiosidade fuça a escuridão — e vira obsessão.";
+      return "🔍 Uma pergunta silenciosa paira no ar."; }
+    return "";
+  }
+  const W3_FATES = {
+    amorpleno:  {badge:"💖", title:"Amor Verdadeiro", kind:"win", color:"#ff6b9d", hint:"Deixe o amor reinar — amor sobre amor, sem sombras que o corroam.",
+                 text:"O coração transborda afeto. Sem medo nem ódio para envenená-lo, resta o amor puro e pleno. 💖"},
+    iluminacao: {badge:"🌟", title:"A Iluminação", kind:"win", color:"#ffd76b", hint:"Comece pelo amor e então deixe a curiosidade explorar — o coração vira sabedoria.",
+                 text:"Amor e curiosidade se encontram. Das perguntas guiadas pelo afeto nasce a sabedoria serena. 🌟"},
+    furia:      {badge:"🔥", title:"A Fúria", kind:"lose", color:"#ff4d4d", hint:"Ódio sobre ódio, sem trégua — deixe-o consumir tudo.",
+                 text:"O ódio cresceu sem limite e virou fúria cega. Só resta o fogo que devora quem o carrega. 🔥"},
+    frieza:     {badge:"🖤", title:"Coração de Pedra", kind:"lose", color:"#5a6070", hint:"Alimente o ódio a partir do medo — mas sem deixá-lo explodir em fúria.",
+                 text:"O ódio endureceu o coração até virar pedra. Frio, imóvel, incapaz de sentir. 🖤"},
+    medo:       {badge:"😱", title:"Prisioneiro do Medo", kind:"lose", color:"#7d6bff", hint:"Só medo, medo e mais medo — sem amor que o acalme.",
+                 text:"O medo tomou conta e paralisou a alma. Preso em suas próprias sombras, sem coragem de sair. 😱"},
+    obsessao:   {badge:"🌀", title:"A Obsessão", kind:"lose", color:"#a678ff", hint:"Deixe a curiosidade cavar na escuridão — sem amor, ela vira obsessão.",
+                 text:"A curiosidade, sem o calor do amor, mergulhou na escuridão e virou obsessão sem fim. 🌀"},
+    partido:    {badge:"💔", title:"Coração Partido", kind:"lose", color:"#ff5a7a", hint:"Ame primeiro — depois deixe o ódio destruir esse amor.",
+                 text:"O coração amou, e então o ódio o dilacerou. Restam só os cacos de um amor traído. 💔"},
+    indiferenca:{badge:"😶", title:"A Indiferença", kind:"lose", color:"#8a93a3", hint:"Deixe emoções opostas se anularem — até nada mais restar.",
+                 text:"As emoções se cancelaram entre si. Onde havia um coração, resta apenas indiferença vazia. 😶"},
+  };
+  const WORLD3 = {
+    id:3, name:"O Coração", lvl:"Nível 1 — Uma Alma em Branco",
+    cards:W3_CARDS, plays:3, initialEmoji:"🤍",
+    storyStart:"Um coração ainda em branco. Três emoções, em ordem, vão moldar quem ele se torna.",
+    stats:[["❤️","amor"],["😨","medo"],["😡","odio"],["🔍","sabedoria"],["🌀","obsessao"]],
+    newState:w3_new, apply:w3_apply, classify:w3_classify, emoji:w3_emoji, bg:w3_bg, react:w3_react,
+    fates:W3_FATES, fateOrder:["amorpleno","iluminacao","furia","frieza","medo","obsessao","partido","indiferenca"],
+  };
+
+  /* ============================================================
+     MUNDO 4 — AS CORES  (Vermelho, Azul, Amarelo, Prata)
+  ============================================================ */
+  const W4_CARDS = [
+    {key:"vermelho", emoji:"🔴", name:"VERMELHO", color:"#ff4d4d", color2:"#ff8a6b", fx:"spread"},
+    {key:"azul",     emoji:"🔵", name:"AZUL",     color:"#3d7bff", color2:"#8fb8ff", fx:"down"},
+    {key:"amarelo",  emoji:"🟡", name:"AMARELO",  color:"#ffd23d", color2:"#fff0a0", fx:"up"},
+    {key:"prata",    emoji:"⚪", name:"PRATA",    color:"#c8ccd6", color2:"#ffffff", fx:"spread"},
+  ];
+  function w4_new(){ return {r:0, b:0, y:0, prata:0, brilho:0, mud:0}; }
+  function w4_apply(prev, el){
+    const s={...prev};
+    if(el==="vermelho"){ s.r+=2; if(prev.b>0&&prev.y>0) s.mud+=2; }
+    else if(el==="azul"){ s.b+=2; if(prev.r>0&&prev.y>0) s.mud+=2; }
+    else if(el==="amarelo"){ s.y+=2; if(prev.r>0&&prev.b>0) s.mud+=2; }
+    else if(el==="prata"){ s.prata+=2;
+      const cores=(prev.r>0?1:0)+(prev.b>0?1:0)+(prev.y>0?1:0);
+      if(cores>=2) s.brilho+=3; else if(cores===1) s.brilho+=1;   // prata POR CIMA das cores = brilho
+      if(prev.mud>0) s.mud+=1;
+    }
+    return s;
+  }
+  function w4_classify(s){
+    if(s.mud>=2) return "marrom";
+    if(s.brilho>=3) return "arcoiris";
+    if(s.brilho>=1) return "metalico";
+    if(s.r>0&&s.b>0&&s.y===0) return "purpura";
+    if(s.r>0&&s.y>0&&s.b===0) return "laranja";
+    if(s.b>0&&s.y>0&&s.r===0) return "verde";
+    if(s.prata>0 && s.r===0&&s.b===0&&s.y===0) return "prateado";
+    return "monocromatico";
+  }
+  function w4_emoji(s, done){
+    if(!done && s.r===0&&s.b===0&&s.y===0&&s.prata===0) return "⬜";
+    if(s.mud>=2) return "🟤";
+    if(s.brilho>=3) return "🌈";
+    if(s.brilho>=1) return "✨";
+    if(s.r>0&&s.b>0&&s.y===0) return "🟣";
+    if(s.r>0&&s.y>0&&s.b===0) return "🟠";
+    if(s.b>0&&s.y>0&&s.r===0) return "🟢";
+    if(s.prata>0 && s.r===0&&s.b===0&&s.y===0) return "⚪";
+    if(s.r>0&&s.b===0&&s.y===0) return "🔴";
+    if(s.b>0&&s.r===0&&s.y===0) return "🔵";
+    if(s.y>0&&s.r===0&&s.b===0) return "🟡";
+    return "⬜";
+  }
+  function w4_bg(s){
+    if(s.mud>=2) return "radial-gradient(circle at 35% 30%,#8a6b4a,#241a10 70%)";
+    if(s.brilho>=3) return "conic-gradient(from 200deg at 40% 35%,#ff6b6b,#ffd23d,#54c07a,#3d7bff,#a678ff,#ff6b6b)";
+    if(s.brilho>=1) return "radial-gradient(circle at 35% 25%,#eef1f7,#7a808f 75%)";
+    if(s.r>0&&s.b>0&&s.y===0) return "radial-gradient(circle at 35% 30%,#a678ff,#1a0e2a 70%)";
+    if(s.r>0&&s.y>0&&s.b===0) return "radial-gradient(circle at 35% 30%,#ff9a3c,#2a1602 70%)";
+    if(s.b>0&&s.y>0&&s.r===0) return "radial-gradient(circle at 35% 30%,#54c07a,#0c2a17 70%)";
+    if(s.prata>0&&s.r===0&&s.b===0&&s.y===0) return "radial-gradient(circle at 35% 25%,#f2f4f8,#9aa0ac 75%)";
+    if(s.r>0) return "radial-gradient(circle at 35% 30%,#ff4d4d,#2a0606 70%)";
+    if(s.b>0) return "radial-gradient(circle at 35% 30%,#3d7bff,#07204d 70%)";
+    if(s.y>0) return "radial-gradient(circle at 35% 30%,#ffd23d,#2a2408 70%)";
+    return "radial-gradient(circle at 35% 30%,#33406e,#0c1230 70%)";
+  }
+  function w4_react(prev, el){
+    if(el==="vermelho"){ if(prev.b>0&&prev.y>0) return "🔴 O vermelho fecha o trio — as cores começam a embarrar.";
+      if(prev.b>0) return "🔴 Vermelho sobre azul: uma púrpura profunda surge.";
+      if(prev.y>0) return "🔴 Vermelho sobre amarelo: um laranja quente floresce.";
+      return "🔴 Uma pincelada vermelha, viva, cai na tela."; }
+    if(el==="azul"){ if(prev.r>0&&prev.y>0) return "🔵 O azul fecha o trio — tudo vira lama.";
+      if(prev.r>0) return "🔵 Azul sobre vermelho: nasce a púrpura.";
+      if(prev.y>0) return "🔵 Azul sobre amarelo: um verde vibrante.";
+      return "🔵 Um traço azul, calmo e fundo."; }
+    if(el==="amarelo"){ if(prev.r>0&&prev.b>0) return "🟡 O amarelo satura o trio — a mistura escurece em marrom.";
+      if(prev.r>0) return "🟡 Amarelo sobre vermelho: laranja radiante.";
+      if(prev.b>0) return "🟡 Amarelo sobre azul: verde brilhante.";
+      return "🟡 Uma pincelada amarela, solar, na tela."; }
+    if(el==="prata"){ const cores=(prev.r>0?1:0)+(prev.b>0?1:0)+(prev.y>0?1:0);
+      if(cores>=2) return "⚪ A prata escorre sobre as cores — tudo ganha brilho iridescente!";
+      if(cores===1) return "⚪ A prata realça a cor com um lustro metálico.";
+      return "⚪ Prata pura, espelhada, cobre a tela."; }
+    return "";
+  }
+  const W4_FATES = {
+    arcoiris:      {badge:"🌈", title:"Arco-Íris", kind:"win", color:"#7ad0ff", hint:"Pinte DUAS cores primeiro e finalize com prata por cima — o brilho faz nascer a obra-prima.",
+                    text:"Prata iridescente escorre sobre as cores e a tela ganha vida em mil reflexos. Uma verdadeira obra-prima. 🌈"},
+    purpura:       {badge:"🟣", title:"Púrpura", kind:"win", color:"#a678ff", hint:"Vermelho e azul, só os dois.",
+                    text:"Vermelho e azul se fundem numa púrpura profunda e nobre. Simples e elegante."},
+    laranja:       {badge:"🟠", title:"Laranja", kind:"win", color:"#ff9a3c", hint:"Vermelho e amarelo, sem azul.",
+                    text:"Vermelho e amarelo se abraçam num laranja quente, cheio de energia."},
+    verde:         {badge:"🟢", title:"Verde", kind:"win", color:"#54c07a", hint:"Azul e amarelo, sem vermelho.",
+                    text:"Azul e amarelo se misturam num verde vivo — a cor da natureza."},
+    metalico:      {badge:"✨", title:"Metálico", kind:"win", color:"#c8ccd6", hint:"Uma única cor, com prata por cima, para um lustro metálico.",
+                    text:"A prata realça uma única cor com um brilho metálico, liso e reluzente."},
+    prateado:      {badge:"⚪", title:"Espelho de Prata", kind:"win", color:"#dfe3ec", hint:"Só prata, nada mais.",
+                    text:"Apenas prata, pura e espelhada. A tela vira um reflexo perfeito de quem a olha."},
+    marrom:        {badge:"🟤", title:"Marrom (Lama)", kind:"lose", color:"#8a6b4a", hint:"Misture as TRÊS cores primárias — e veja virar lama.",
+                    text:"Vermelho, azul e amarelo juntos... a mistura embarrou num marrom sem graça. Cores demais estragam a obra. 🟤"},
+    monocromatico: {badge:"🎨", title:"Tela Monocromática", kind:"lose", color:"#9aa3b3", hint:"Uma só cor, pura, sem nenhuma mistura.",
+                    text:"Uma só cor cobre tudo, sem contraste nem mistura. Uma tela monótona, à espera de mais ousadia."},
+  };
+  const WORLD4 = {
+    id:4, name:"As Cores", lvl:"Nível 1 — A Tela em Branco",
+    cards:W4_CARDS, plays:3, initialEmoji:"⬜",
+    storyStart:"Uma tela em branco. Misture 3 cores, na ordem certa, e descubra a obra que nasce.",
+    stats:[["🔴","r"],["🔵","b"],["🟡","y"],["⚪","prata"],["✨","brilho"],["🟤","mud"]],
+    newState:w4_new, apply:w4_apply, classify:w4_classify, emoji:w4_emoji, bg:w4_bg, react:w4_react,
+    fates:W4_FATES, fateOrder:["arcoiris","purpura","laranja","verde","metalico","prateado","marrom","monocromatico"],
+  };
+
+  const GAMES = {1:WORLD1, 2:WORLD2, 3:WORLD3, 4:WORLD4};
 
   // ---------- WORLDS (menu tiles) ----------
   const WORLDS = [
     {id:1, name:"Os Elementos",  emoji:"🌍", tag:"4 elementos · 8 finais", playable:true},
     {id:2, name:"Química da Vida", emoji:"🧪", tag:"4 átomos · 8 moléculas", playable:true},
-    {id:3, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
-    {id:4, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
+    {id:3, name:"O Coração", emoji:"❤️", tag:"4 emoções · 8 destinos", playable:true},
+    {id:4, name:"As Cores", emoji:"🎨", tag:"4 cores · 8 obras", playable:true},
     {id:5, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
     {id:6, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
     {id:7, name:"Em breve", emoji:"🔒", tag:"a definir", playable:false},
